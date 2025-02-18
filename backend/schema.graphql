@@ -1,0 +1,94 @@
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  products: [Product!]!
+  boughtProducts: [Transaction!]!
+  soldProducts: [Transaction!]!
+  rentedProducts: [Rental!]!
+  lentProducts: [Rental!]!
+}
+
+type Product {
+  id: ID!
+  title: String!
+  description: String!
+  price: Float!
+  rentPrice: Float
+  categories: [Category!]!
+  owner: User!
+  isAvailable: Boolean!
+  isRentable: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  products: [Product!]!
+}
+
+type Transaction {
+  id: ID!
+  product: Product!
+  buyer: User!
+  seller: User!
+  price: Float!
+  createdAt: String!
+}
+
+type Rental {
+  id: ID!
+  product: Product!
+  renter: User!
+  owner: User!
+  startDate: String!
+  endDate: String!
+  price: Float!
+  createdAt: String!
+}
+
+type Query {
+  users: [User!]!
+  user(id: ID!): User
+  products: [Product!]!
+  product(id: ID!): Product
+  categories: [Category!]!
+  myProducts: [Product!]!
+  myTransactions: [Transaction!]!
+  myRentals: [Rental!]!
+}
+
+type Mutation {
+  register(email: String!, password: String!, firstName: String!, lastName: String!): User!
+  login(email: String!, password: String!): AuthPayload!
+
+  createProduct(
+    title: String!
+    description: String!
+    price: Float!
+    rentPrice: Float
+    isRentable: Boolean!
+    categoryIds: [ID!]!
+  ): Product!
+  updateProduct(
+    id: ID!
+    title: String
+    description: String
+    price: Float
+    rentPrice: Float
+    isRentable: Boolean
+    categoryIds: [ID!]
+  ): Product!
+  deleteProduct(id: ID!): Boolean!
+
+  buyProduct(productId: ID!): Transaction!
+  rentProduct(productId: ID!, startDate: String!, endDate: String!): Rental!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
