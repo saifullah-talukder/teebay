@@ -1,7 +1,7 @@
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
-export class UserResolver extends Resolver {
+export class UserTypeResolver extends Resolver {
   async products(parent: { id: string }, _: any, { prismaClient }: Context) {
     return prismaClient.product.findMany({
       where: { ownerId: parent.id },
@@ -55,6 +55,44 @@ export class UserResolver extends Resolver {
       soldProducts: this.soldProducts.bind(this),
       rentedProducts: this.rentedProducts.bind(this),
       lentProducts: this.lentProducts.bind(this),
+    }
+  }
+}
+
+export class UserQueryResolver extends Resolver {
+  async users(_: any, __: any, { prismaClient }: Context) {
+    return prismaClient.user.findMany()
+  }
+
+  async user(_: any, { id }: { id: string }, { prismaClient }: Context) {
+    return prismaClient.user.findUnique({
+      where: { id },
+    })
+  }
+
+  register() {
+    return {
+      users: this.users.bind(this),
+      user: this.user.bind(this),
+    }
+  }
+}
+
+export class UserMutationResolver extends Resolver {
+  async users(_: any, __: any, { prismaClient }: Context) {
+    return prismaClient.user.findMany()
+  }
+
+  async user(_: any, { id }: { id: string }, { prismaClient }: Context) {
+    return prismaClient.user.findUnique({
+      where: { id },
+    })
+  }
+
+  register() {
+    return {
+      users: this.users.bind(this),
+      user: this.user.bind(this),
     }
   }
 }
