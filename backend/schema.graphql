@@ -25,7 +25,6 @@ type Product {
 }
 
 type Category {
-  id: ID!
   name: String!
   products: [Product!]!
 }
@@ -71,7 +70,7 @@ type Mutation {
     price: Float!
     rentPrice: Float
     isRentable: Boolean!
-    categoryIds: [ID!]!
+    categories: [String!]!
   ): Product!
   updateProduct(
     id: ID!
@@ -80,7 +79,7 @@ type Mutation {
     price: Float
     rentPrice: Float
     isRentable: Boolean
-    categoryIds: [ID!]
+    categories: [String!]!
   ): Product!
   deleteProduct(id: ID!): Boolean!
 

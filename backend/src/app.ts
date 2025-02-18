@@ -4,7 +4,6 @@ import { json } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { readFileSync } from 'fs'
-import http from 'http'
 import path from 'path'
 import { prismaClient } from './providers/prismaClient'
 import { resolvers } from './resolvers'
@@ -14,7 +13,6 @@ const typeDefs = readFileSync(path.join(__dirname, '..', 'schema.graphql'), 'utf
 
 async function startApolloServer() {
   const app = express()
-  const httpServer = http.createServer(app)
 
   const server = new ApolloServer<Context>({
     typeDefs,
@@ -44,7 +42,7 @@ async function startApolloServer() {
   )
 
   const PORT = process.env.PORT || 4000
-  await new Promise<void>(resolve => httpServer.listen({ port: PORT }, resolve))
+  await new Promise<void>(resolve => app.listen({ port: PORT }, resolve))
   console.log(`Server running at http://localhost:${PORT}/graphql`)
 }
 
