@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { Context } from '../types/apollo'
+import { Context } from '../types/Apollo'
 
 interface TokenPayload {
   userId: string
