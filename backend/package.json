@@ -1,0 +1,29 @@
+{
+  "name": "teebay-backend",
+  "description": "Teebay is a fullstack application that allows users to seamlessly rent, buy, and sell products in various categories like electronics, furniture, and more. This is the repo for its backend built with Express.js, GraphQL, Prisma, and PostgreSQL.",
+  "author": "Saifullah Talukder",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p ./",
+    "dev": "ts-node-dev --respawn -- src/app.ts",
+    "start": "pm2-runtime start ecosystem.config.js",
+    "test": "jest --coverage"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/graphql": "^14.2.3",
+    "@types/node": "^22.13.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}
