@@ -61,7 +61,7 @@ type Query {
 }
 
 type Mutation {
-  register(email: String!, password: String!, firstName: String!, lastName: String!): User!
+  signup(email: String!, password: String!, firstName: String!, lastName: String!): User!
   login(email: String!, password: String!): AuthPayload!
 
   createProduct(

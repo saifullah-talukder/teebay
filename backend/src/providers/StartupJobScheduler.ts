@@ -1,5 +1,5 @@
 import { DatabaseInitializationJob } from '../jobs/DatabaseInitializationJob'
 
-export const registerStartupJobs = () => {
+export function registerStartupJobs() {
   new DatabaseInitializationJob().register()
 }

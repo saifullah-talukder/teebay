@@ -1,12 +1,11 @@
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
 import bodyParser from 'body-parser'
-import cors from 'cors'
 import express, { Express } from 'express'
 import { readFileSync } from 'fs'
 import path from 'path'
-import { resolvers } from '../resolvers'
 import { Context } from '../types/Apollo'
+import { registerGraphQLResolvers } from './GraphQLResolvers'
 import { prismaClient } from './PrismaClient'
 
 const typeDefs = readFileSync(path.join(__dirname, '..', '..', 'schema.graphql'), 'utf-8')
@@ -14,7 +13,7 @@ const typeDefs = readFileSync(path.join(__dirname, '..', '..', 'schema.graphql')
 export async function createHttpServer(): Promise<Express> {
   const server = new ApolloServer<Context>({
     typeDefs,
-    resolvers,
+    resolvers: registerGraphQLResolvers(),
     formatError: error => {
       console.error('Server error:', error)
       return {
