@@ -1,26 +1,13 @@
 import DataLoader from 'dataloader'
-import { prismaClient } from '../providers/PrismaClient'
+import { CategoryRepository } from '../database/CategoryRepository'
 import Loader from './Loader'
 
 export class CategoryLoader extends Loader {
-  loadCategoriesOfProducts = new DataLoader(async (productIds: readonly string[]) => {
-    // Get all categories for all requested product IDs in one query
-    const productCategories = await prismaClient.category.findMany({
-      where: {
-        products: {
-          some: {
-            id: { in: productIds as string[] },
-          },
-        },
-      },
-      include: {
-        products: {
-          select: { id: true },
-        },
-      },
-    })
+  categoryRepository = new CategoryRepository()
 
-    // Group categories by product ID
+  loadCategoriesOfProducts = new DataLoader(async (productIds: readonly string[]) => {
+    const productCategories = await this.categoryRepository.findCategoriesOfProducts(productIds as string[])
+
     return productIds.map(productId =>
       productCategories.filter(category => category.products.some(product => product.id === productId))
     )

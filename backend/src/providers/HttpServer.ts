@@ -18,8 +18,7 @@ export async function createHttpServer(): Promise<Express> {
       console.error('Server error:', error)
       return {
         message: error.message,
-        locations: error.locations,
-        path: error.path,
+        code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
       }
     },
   })

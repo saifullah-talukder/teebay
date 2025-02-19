@@ -1,18 +1,10 @@
-import { prismaClient } from '../providers/PrismaClient'
+import { CategoriesFindService } from '../services/category/CategoriesFindService'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
 export class CategoryTypeResolver extends Resolver {
-  async products(parent: { name: string }, _: any, context: Context) {
-    return prismaClient.product.findMany({
-      where: {
-        categories: {
-          some: {
-            name: parent.name,
-          },
-        },
-      },
-    })
+  async products(parent: { name: string }, _: any, { loaders }: Context) {
+    return loaders.productLoader.loadProductsByCategory.load(parent.name)
   }
 
   register() {
@@ -24,7 +16,7 @@ export class CategoryTypeResolver extends Resolver {
 
 export class CategoryQueryResolver extends Resolver {
   async categories(_: any, __: any, context: Context) {
-    return prismaClient.category.findMany()
+    return await new CategoriesFindService().execute()
   }
 
   register() {
