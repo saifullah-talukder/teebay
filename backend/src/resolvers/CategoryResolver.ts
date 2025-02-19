@@ -1,8 +1,9 @@
+import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
 export class CategoryTypeResolver extends Resolver {
-  async products(parent: { name: string }, _: any, { prismaClient }: Context) {
+  async products(parent: { name: string }, _: any, context: Context) {
     return prismaClient.product.findMany({
       where: {
         categories: {
@@ -22,7 +23,7 @@ export class CategoryTypeResolver extends Resolver {
 }
 
 export class CategoryQueryResolver extends Resolver {
-  async categories(_: any, __: any, { prismaClient }: Context) {
+  async categories(_: any, __: any, context: Context) {
     return prismaClient.category.findMany()
   }
 

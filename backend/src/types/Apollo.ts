@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import express from 'express'
+import { DataLoaders } from '../providers/DataLoaders'
 
 export type Context = {
-  prismaClient: PrismaClient
   req: express.Request
+  loaders: DataLoaders
 }

@@ -1,16 +1,17 @@
 import { GraphQLError } from 'graphql'
+import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
 import { getUserId } from '../utils/Auth'
 import Resolver from './Resolver'
 
 export class ProductTypeResolver extends Resolver {
-  async owner(parent: { ownerId: string }, _: any, { prismaClient }: Context) {
+  async owner(parent: { ownerId: string }, _: any, context: Context) {
     return prismaClient.user.findUnique({
       where: { id: parent.ownerId },
     })
   }
 
-  async categories(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async categories(parent: { id: string }, _: any, context: Context) {
     return prismaClient.category.findMany({
       where: {
         products: {
@@ -31,7 +32,7 @@ export class ProductTypeResolver extends Resolver {
 }
 
 export class ProductQueryResolver extends Resolver {
-  async products(_: any, __: any, { prismaClient }: Context) {
+  async products(_: any, __: any, context: Context) {
     return prismaClient.product.findMany({
       include: {
         owner: true,
@@ -40,7 +41,7 @@ export class ProductQueryResolver extends Resolver {
     })
   }
 
-  async product(_: any, { id }: { id: string }, { prismaClient }: Context) {
+  async product(_: any, { id }: { id: string }, context: Context) {
     return prismaClient.product.findUnique({
       where: { id },
       include: {
@@ -50,8 +51,8 @@ export class ProductQueryResolver extends Resolver {
     })
   }
 
-  async myProducts(_: any, __: any, { prismaClient, req }: Context) {
-    const userId = getUserId({ prismaClient, req })
+  async myProducts(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
     return prismaClient.product.findMany({
       where: { ownerId: userId },
       include: {
@@ -88,9 +89,9 @@ export class ProductMutationResolver extends Resolver {
       isRentable: boolean
       categories: string[]
     },
-    { prismaClient, req }: Context
+    context: Context
   ) {
-    const userId = getUserId({ prismaClient, req })
+    const userId = getUserId(context)
 
     // Create the product
     const product = await prismaClient.product.create({
@@ -135,9 +136,9 @@ export class ProductMutationResolver extends Resolver {
       isRentable?: boolean
       categoryIds?: string[]
     },
-    { prismaClient, req }: Context
+    context: Context
   ) {
-    const userId = getUserId({ prismaClient, req })
+    const userId = getUserId(context)
 
     // Verify product ownership
     const existingProduct = await prismaClient.product.findUnique({
@@ -203,8 +204,8 @@ export class ProductMutationResolver extends Resolver {
     return updatedProduct
   }
 
-  async deleteProduct(_: any, { id }: { id: string }, { prismaClient, req }: Context) {
-    const userId = getUserId({ prismaClient, req })
+  async deleteProduct(_: any, { id }: { id: string }, context: Context) {
+    const userId = getUserId(context)
 
     // Verify product ownership
     const existingProduct = await prismaClient.product.findUnique({

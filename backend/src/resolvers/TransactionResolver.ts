@@ -1,22 +1,23 @@
 import { GraphQLError } from 'graphql'
+import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
 import { getUserId } from '../utils/Auth'
 import Resolver from './Resolver'
 
 export class TransactionTypeResolver extends Resolver {
-  async product(parent: { productId: string }, _: any, { prismaClient }: Context) {
+  async product(parent: { productId: string }, _: any, context: Context) {
     return prismaClient.product.findUnique({
       where: { id: parent.productId },
     })
   }
 
-  async buyer(parent: { buyerId: string }, _: any, { prismaClient }: Context) {
+  async buyer(parent: { buyerId: string }, _: any, context: Context) {
     return prismaClient.user.findUnique({
       where: { id: parent.buyerId },
     })
   }
 
-  async seller(parent: { sellerId: string }, _: any, { prismaClient }: Context) {
+  async seller(parent: { sellerId: string }, _: any, context: Context) {
     return prismaClient.user.findUnique({
       where: { id: parent.sellerId },
     })
@@ -32,8 +33,8 @@ export class TransactionTypeResolver extends Resolver {
 }
 
 export class TransactionQueryResolver extends Resolver {
-  async myTransactions(_: any, __: any, { prismaClient, req }: Context) {
-    const userId = getUserId({ prismaClient, req })
+  async myTransactions(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
     return prismaClient.transaction.findMany({
       where: {
         OR: [{ buyerId: userId }, { sellerId: userId }],
@@ -54,8 +55,8 @@ export class TransactionQueryResolver extends Resolver {
 }
 
 export class TransactionMutationResolver extends Resolver {
-  async buyProduct(_: any, { productId }: { productId: string }, { prismaClient, req }: Context) {
-    const buyerId = getUserId({ prismaClient, req })
+  async buyProduct(_: any, { productId }: { productId: string }, context: Context) {
+    const buyerId = getUserId(context)
 
     // Get the product
     const product = await prismaClient.product.findUnique({

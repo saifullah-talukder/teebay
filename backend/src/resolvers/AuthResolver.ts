@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { Context } from '../types/Apollo'
 import { JWT_SECRET } from '../utils/Auth'
 import Resolver from './Resolver'
+import { prismaClient } from '../providers/PrismaClient'
 
 export class AuthResolver extends Resolver {
   async signup(
@@ -19,7 +20,7 @@ export class AuthResolver extends Resolver {
       firstName: string
       lastName: string
     },
-    { prismaClient }: Context
+    context: Context
   ) {
     // Check if user already exists
     const existingUser = await prismaClient.user.findUnique({
@@ -48,7 +49,7 @@ export class AuthResolver extends Resolver {
     return user
   }
 
-  async login(_: any, { email, password }: { email: string; password: string }, { prismaClient }: Context) {
+  async login(_: any, { email, password }: { email: string; password: string }, context: Context) {
     // Find user by email
     const user = await prismaClient.user.findUnique({
       where: { email },

@@ -1,14 +1,15 @@
+import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
 export class UserTypeResolver extends Resolver {
-  async products(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async products(parent: { id: string }, _: any, context: Context) {
     return prismaClient.product.findMany({
       where: { ownerId: parent.id },
     })
   }
 
-  async boughtProducts(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async boughtProducts(parent: { id: string }, _: any, context: Context) {
     return prismaClient.transaction.findMany({
       where: { buyerId: parent.id },
       include: {
@@ -18,7 +19,7 @@ export class UserTypeResolver extends Resolver {
     })
   }
 
-  async soldProducts(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async soldProducts(parent: { id: string }, _: any, context: Context) {
     return prismaClient.transaction.findMany({
       where: { sellerId: parent.id },
       include: {
@@ -28,7 +29,7 @@ export class UserTypeResolver extends Resolver {
     })
   }
 
-  async rentedProducts(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async rentedProducts(parent: { id: string }, _: any, context: Context) {
     return prismaClient.rental.findMany({
       where: { renterId: parent.id },
       include: {
@@ -38,7 +39,7 @@ export class UserTypeResolver extends Resolver {
     })
   }
 
-  async lentProducts(parent: { id: string }, _: any, { prismaClient }: Context) {
+  async lentProducts(parent: { id: string }, _: any, context: Context) {
     return prismaClient.rental.findMany({
       where: { ownerId: parent.id },
       include: {
@@ -60,11 +61,11 @@ export class UserTypeResolver extends Resolver {
 }
 
 export class UserQueryResolver extends Resolver {
-  async users(_: any, __: any, { prismaClient }: Context) {
+  async users(_: any, __: any, context: Context) {
     return prismaClient.user.findMany()
   }
 
-  async user(_: any, { id }: { id: string }, { prismaClient }: Context) {
+  async user(_: any, { id }: { id: string }, context: Context) {
     return prismaClient.user.findUnique({
       where: { id },
     })
@@ -79,11 +80,11 @@ export class UserQueryResolver extends Resolver {
 }
 
 export class UserMutationResolver extends Resolver {
-  async users(_: any, __: any, { prismaClient }: Context) {
+  async users(_: any, __: any, context: Context) {
     return prismaClient.user.findMany()
   }
 
-  async user(_: any, { id }: { id: string }, { prismaClient }: Context) {
+  async user(_: any, { id }: { id: string }, context: Context) {
     return prismaClient.user.findUnique({
       where: { id },
     })

@@ -5,8 +5,8 @@ import express, { Express } from 'express'
 import { readFileSync } from 'fs'
 import path from 'path'
 import { Context } from '../types/Apollo'
+import { registerDataLoaders } from './DataLoaders'
 import { registerGraphQLResolvers } from './GraphQLResolvers'
-import { prismaClient } from './PrismaClient'
 
 const typeDefs = readFileSync(path.join(__dirname, '..', '..', 'schema.graphql'), 'utf-8')
 
@@ -39,8 +39,8 @@ export async function createHttpServer(): Promise<Express> {
     '/graphql',
     expressMiddleware(server, {
       context: async ({ req }): Promise<Context> => ({
-        prismaClient,
         req,
+        loaders: registerDataLoaders(),
       }),
     })
   )

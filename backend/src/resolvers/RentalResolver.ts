@@ -1,22 +1,23 @@
 import { GraphQLError } from 'graphql'
+import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
 import { getUserId } from '../utils/Auth'
 import Resolver from './Resolver'
 
 export class RentalTypeResolver extends Resolver {
-  async product(parent: { productId: string }, _: any, { prismaClient }: Context) {
+  async product(parent: { productId: string }, _: any, context: Context) {
     return prismaClient.product.findUnique({
       where: { id: parent.productId },
     })
   }
 
-  async renter(parent: { renterId: string }, _: any, { prismaClient }: Context) {
+  async renter(parent: { renterId: string }, _: any, context: Context) {
     return prismaClient.user.findUnique({
       where: { id: parent.renterId },
     })
   }
 
-  async owner(parent: { ownerId: string }, _: any, { prismaClient }: Context) {
+  async owner(parent: { ownerId: string }, _: any, context: Context) {
     return prismaClient.user.findUnique({
       where: { id: parent.ownerId },
     })
@@ -32,8 +33,8 @@ export class RentalTypeResolver extends Resolver {
 }
 
 export class RentalQueryResolver extends Resolver {
-  async myRentals(_: any, __: any, { prismaClient, req }: Context) {
-    const userId = getUserId({ prismaClient, req })
+  async myRentals(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
     return prismaClient.rental.findMany({
       where: {
         OR: [{ renterId: userId }, { ownerId: userId }],
@@ -65,9 +66,9 @@ export class RentalMutationResolver extends Resolver {
       startDate: string
       endDate: string
     },
-    { prismaClient, req }: Context
+    context: Context
   ) {
-    const renterId = getUserId({ prismaClient, req })
+    const renterId = getUserId(context)
 
     // Parse dates
     const parsedStartDate = new Date(startDate)
