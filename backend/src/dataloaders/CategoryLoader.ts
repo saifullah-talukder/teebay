@@ -10,8 +10,8 @@ export class CategoryLoader extends Loader {
     this.categoryRepository = new CategoryRepository()
   }
 
-  loadCategoriesOfProducts = new DataLoader(async (productIds: readonly string[]) => {
-    const productCategories = await this.categoryRepository.findCategoriesOfProducts(productIds as string[])
+  loadCategoriesByProducts = new DataLoader(async (productIds: readonly string[]) => {
+    const productCategories = await this.categoryRepository.findCategoriesByProducts(productIds as string[])
 
     return productIds.map(productId =>
       productCategories.filter(category => category.products.some(product => product.id === productId))
@@ -19,6 +19,6 @@ export class CategoryLoader extends Loader {
   })
 
   register() {
-    return { loadCategoriesOfProducts: this.loadCategoriesOfProducts }
+    return { loadCategoriesByProducts: this.loadCategoriesByProducts }
   }
 }

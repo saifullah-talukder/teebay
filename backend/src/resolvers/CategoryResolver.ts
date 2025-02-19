@@ -1,4 +1,4 @@
-import { CategoriesFindService } from '../services/category/CategoriesFindService'
+import { FindCategoriesService } from '../services/category/FIndCategoriesService'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
@@ -16,7 +16,7 @@ export class CategoryTypeResolver extends Resolver {
 
 export class CategoryQueryResolver extends Resolver {
   async categories(_: any, __: any, context: Context) {
-    return await new CategoriesFindService().execute()
+    return await new FindCategoriesService().execute()
   }
 
   register() {

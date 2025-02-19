@@ -8,12 +8,12 @@ import Resolver from './Resolver'
 export class AuthResolver extends Resolver {
   async signup(_: any, payload: SignupPayload, context: Context) {
     const signupPayload = validateSignupPayload(payload)
-    return await new SignupService(signupPayload).execute()
+    return await new SignupService(signupPayload, context.loaders).execute()
   }
 
   async login(_: any, payload: LoginPayload, context: Context) {
     const loginPayload = validateLoginPayload(payload)
-    return await new LoginService(loginPayload).execute()
+    return await new LoginService(loginPayload, context.loaders).execute()
   }
 
   register() {

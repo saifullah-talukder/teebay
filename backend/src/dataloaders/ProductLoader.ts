@@ -1,57 +1,30 @@
 import DataLoader from 'dataloader'
-import { prismaClient } from '../providers/PrismaClient'
+import { ProductRepository } from '../database/ProductRepository'
 import Loader from './Loader'
 
 export class ProductLoader extends Loader {
-  loadProductsById = new DataLoader(async (ids: readonly string[]) => {
-    const products = await prismaClient.product.findMany({
-      where: { id: { in: ids as string[] } },
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
+  productRepository: ProductRepository
 
-    // Ensure we return products in the same order as the requested ids
+  constructor() {
+    super()
+    this.productRepository = new ProductRepository()
+  }
+
+  loadProductsById = new DataLoader(async (ids: readonly string[]) => {
+    const products = await this.productRepository.findProductsById(ids as string[])
     return ids.map(id => products.find(product => product.id === id) || null)
   })
 
   loadProductsByOwner = new DataLoader(async (userIds: readonly string[]) => {
-    const products = await prismaClient.product.findMany({
-      where: { ownerId: { in: userIds as string[] } },
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
-
-    // Group products by ownerId
-    const productsByOwner = userIds.map(userId => {
-      return products.filter(product => product.ownerId === userId)
-    })
-
-    return productsByOwner
+    const products = await this.productRepository.findProductsByOwner(userIds as string[])
+    return userIds.map(userId => products.filter(product => product.ownerId === userId))
   })
 
   loadProductsByCategory = new DataLoader(async (categories: readonly string[]) => {
-    const products = await prismaClient.product.findMany({
-      where: {
-        categories: {
-          some: {
-            name: { in: categories as string[] },
-          },
-        },
-      },
-      include: {
-        categories: true,
-      },
-    })
-
-    // Map products to their respective categories
-    const productsByCategory = categories.map(name => {
-      return products.filter((product: any) => product.categories.some((category: any) => category.name === name))
-    })
-
+    const products = await this.productRepository.findProductsByCategory(categories as string[])
+    const productsByCategory = categories.map(categoryName =>
+      products.filter((product: any) => product.categories.some((category: any) => category.name === categoryName))
+    )
     return productsByCategory
   })
 

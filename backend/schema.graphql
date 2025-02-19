@@ -55,7 +55,7 @@ type Query {
   products: [Product!]!
   product(id: ID!): Product
   categories: [Category!]!
-  myProducts: [Product!]!
+  productsByOwner: [Product!]!
   myTransactions: [Transaction!]!
   myRentals: [Rental!]!
 }
@@ -79,7 +79,7 @@ type Mutation {
     price: Float
     rentPrice: Float
     isRentable: Boolean
-    categories: [String!]!
+    categories: [String!]
   ): Product!
   deleteProduct(id: ID!): Boolean!
 

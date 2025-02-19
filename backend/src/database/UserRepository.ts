@@ -3,13 +3,25 @@ import Repository from './Repository'
 import { SignupPayload } from '../validation/auth/SignupMutation'
 
 export class UserRepository extends Repository {
-  async findUserByEmail(email: string) {
+  async findUsersByIds(userIds: string[]) {
     try {
-      return await this.prismaClient.user.findUnique({
-        where: { email },
+      return await this.prismaClient.user.findMany({
+        where: { id: { in: userIds } },
       })
     } catch (error) {
-      throw new GraphQLError('Failed to fetch user by email', {
+      throw new GraphQLError('Failed to fetch users by ids', {
+        extensions: { code: 'DATABASE_ERROR', error: (error as Error).message },
+      })
+    }
+  }
+
+  async findUsersByEmails(emails: string[]) {
+    try {
+      return await this.prismaClient.user.findMany({
+        where: { email: { in: emails } },
+      })
+    } catch (error) {
+      throw new GraphQLError('Failed to fetch users by emails', {
         extensions: { code: 'DATABASE_ERROR', error: (error as Error).message },
       })
     }

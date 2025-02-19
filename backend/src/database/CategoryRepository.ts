@@ -12,7 +12,7 @@ export class CategoryRepository extends Repository {
     }
   }
 
-  async findCategoriesOfProducts(productIds: string[]) {
+  async findCategoriesByProducts(productIds: string[]) {
     try {
       return await this.prismaClient.category.findMany({
         where: {

@@ -1,26 +1,23 @@
-import { GraphQLError } from 'graphql'
 import { getUserId } from '../middleware/Auth'
-import { prismaClient } from '../providers/PrismaClient'
+import { CreateProductService } from '../services/product/CreateProductService'
+import { DeleteProductService } from '../services/product/DeleteProductService'
+import { FindProductByIdService } from '../services/product/FindProductByIdService'
+import { FindProductsByOwnerService } from '../services/product/FindProductsByOwnerService'
+import { FindProductsService } from '../services/product/FindProductsService'
+import { UpdateProductService } from '../services/product/UpdateProductService'
 import { Context } from '../types/Apollo'
+import { CreateProductPayload, validateCreateProductPayload } from '../validation/product/CreateProductMutation'
+import { DeleteProductPayload, validateDeleteProductPayload } from '../validation/product/DeleteProductMutation'
+import { UpdateProductPayload, validateUpdateProductPayload } from '../validation/product/UpdateProductMutation'
 import Resolver from './Resolver'
 
 export class ProductTypeResolver extends Resolver {
   async owner(parent: { ownerId: string }, _: any, context: Context) {
-    return prismaClient.user.findUnique({
-      where: { id: parent.ownerId },
-    })
+    return context.loaders.userLoader.loadUsersById.load(parent.ownerId)
   }
 
   async categories(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.category.findMany({
-      where: {
-        products: {
-          some: {
-            id: parent.id,
-          },
-        },
-      },
-    })
+    return context.loaders.categoryLoader.loadCategoriesByProducts.load(parent.id)
   }
 
   register() {
@@ -33,217 +30,44 @@ export class ProductTypeResolver extends Resolver {
 
 export class ProductQueryResolver extends Resolver {
   async products(_: any, __: any, context: Context) {
-    return prismaClient.product.findMany({
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
+    return await new FindProductsService().execute()
   }
 
   async product(_: any, { id }: { id: string }, context: Context) {
-    return prismaClient.product.findUnique({
-      where: { id },
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
+    return await new FindProductByIdService(id, context.loaders).execute()
   }
 
-  async myProducts(_: any, __: any, context: Context) {
+  async productsByOwner(_: any, __: any, context: Context) {
     const userId = getUserId(context)
-    return prismaClient.product.findMany({
-      where: { ownerId: userId },
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
+    return await new FindProductsByOwnerService(userId, context.loaders).execute()
   }
 
   register() {
     return {
       products: this.products.bind(this),
       product: this.product.bind(this),
-      myProducts: this.myProducts.bind(this),
+      productsByOwner: this.productsByOwner.bind(this),
     }
   }
 }
 
 export class ProductMutationResolver extends Resolver {
-  async createProduct(
-    _: any,
-    {
-      title,
-      description,
-      price,
-      rentPrice,
-      isRentable,
-      categories,
-    }: {
-      title: string
-      description: string
-      price: number
-      rentPrice: number
-      isRentable: boolean
-      categories: string[]
-    },
-    context: Context
-  ) {
+  async createProduct(_: any, payload: CreateProductPayload, context: Context) {
     const userId = getUserId(context)
-
-    // Create the product
-    const product = await prismaClient.product.create({
-      data: {
-        title,
-        description,
-        price,
-        rentPrice,
-        isRentable,
-        owner: {
-          connect: { id: userId },
-        },
-        categories: {
-          connect: categories.map(name => ({ name })),
-        },
-      },
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
-
-    return product
+    const createProductPayload = validateCreateProductPayload(payload)
+    return await new CreateProductService(userId, createProductPayload).execute()
   }
 
-  async updateProduct(
-    _: any,
-    {
-      id,
-      title,
-      description,
-      price,
-      rentPrice,
-      isRentable,
-      categoryIds,
-    }: {
-      id: string
-      title?: string
-      description?: string
-      price?: number
-      rentPrice?: number
-      isRentable?: boolean
-      categoryIds?: string[]
-    },
-    context: Context
-  ) {
+  async updateProduct(_: any, payload: UpdateProductPayload, context: Context) {
     const userId = getUserId(context)
-
-    // Verify product ownership
-    const existingProduct = await prismaClient.product.findUnique({
-      where: { id },
-    })
-
-    if (!existingProduct) {
-      throw new GraphQLError('Product not found', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    if (existingProduct.ownerId !== userId) {
-      throw new GraphQLError('Not authorized to update this product', {
-        extensions: { code: 'FORBIDDEN' },
-      })
-    }
-
-    // Prepare update data
-    const updateData: any = {
-      title,
-      description,
-      price,
-      rentPrice,
-      isRentable,
-    }
-
-    // Remove undefined fields
-    Object.keys(updateData).forEach(key => {
-      if (updateData[key] === undefined) {
-        delete updateData[key]
-      }
-    })
-
-    // Update categories if provided
-    if (categoryIds) {
-      // First disconnect all existing categories
-      await prismaClient.product.update({
-        where: { id },
-        data: {
-          categories: {
-            set: [],
-          },
-        },
-      })
-
-      // Then connect new categories
-      updateData.categories = {
-        connect: categoryIds.map(catId => ({ id: parseInt(catId) })),
-      }
-    }
-
-    // Update the product
-    const updatedProduct = await prismaClient.product.update({
-      where: { id },
-      data: updateData,
-      include: {
-        owner: true,
-        categories: true,
-      },
-    })
-
-    return updatedProduct
+    const updateProductPayload = validateUpdateProductPayload(payload)
+    return await new UpdateProductService(userId, updateProductPayload, context.loaders).execute()
   }
 
-  async deleteProduct(_: any, { id }: { id: string }, context: Context) {
+  async deleteProduct(_: any, payload: DeleteProductPayload, context: Context) {
     const userId = getUserId(context)
-
-    // Verify product ownership
-    const existingProduct = await prismaClient.product.findUnique({
-      where: { id },
-    })
-
-    if (!existingProduct) {
-      throw new GraphQLError('Product not found', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    if (existingProduct.ownerId !== userId) {
-      throw new GraphQLError('Not authorized to delete this product', {
-        extensions: { code: 'FORBIDDEN' },
-      })
-    }
-
-    // Check if product is involved in any transactions or rentals
-    const transactions = await prismaClient.transaction.findMany({
-      where: { productId: id },
-    })
-
-    const rentals = await prismaClient.rental.findMany({
-      where: { productId: id },
-    })
-
-    if (transactions.length > 0 || rentals.length > 0) {
-      throw new GraphQLError('Cannot delete product that has transactions or rentals', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    // Delete the product
-    await prismaClient.product.delete({
-      where: { id },
-    })
-
+    const { id } = validateDeleteProductPayload(payload)
+    await new DeleteProductService(userId, id, context.loaders).execute()
     return true
   }
 
