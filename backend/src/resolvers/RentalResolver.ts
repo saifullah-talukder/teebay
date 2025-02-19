@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql'
+import { getUserId } from '../middleware/Auth'
 import { prismaClient } from '../providers/PrismaClient'
 import { Context } from '../types/Apollo'
-import { getUserId } from '../utils/Auth'
 import Resolver from './Resolver'
 
 export class RentalTypeResolver extends Resolver {

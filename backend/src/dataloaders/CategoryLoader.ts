@@ -3,7 +3,12 @@ import { CategoryRepository } from '../database/CategoryRepository'
 import Loader from './Loader'
 
 export class CategoryLoader extends Loader {
-  categoryRepository = new CategoryRepository()
+  categoryRepository: CategoryRepository
+
+  constructor() {
+    super()
+    this.categoryRepository = new CategoryRepository()
+  }
 
   loadCategoriesOfProducts = new DataLoader(async (productIds: readonly string[]) => {
     const productCategories = await this.categoryRepository.findCategoriesOfProducts(productIds as string[])
