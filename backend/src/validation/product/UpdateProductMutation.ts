@@ -13,5 +13,4 @@ export const updateProductSchema = z.object({
 })
 
 export type UpdateProductPayload = z.infer<typeof updateProductSchema>
-export type UpdateProductBody = { id: string } & Partial<CreateProductPayload>
 export const validateUpdateProductPayload = validateRequestPayload(updateProductSchema)

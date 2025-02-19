@@ -13,11 +13,11 @@ import Resolver from './Resolver'
 
 export class ProductTypeResolver extends Resolver {
   async owner(parent: { ownerId: string }, _: any, context: Context) {
-    return context.loaders.userLoader.loadUsersById.load(parent.ownerId)
+    return await context.loaders.userLoader.loadUsersById.load(parent.ownerId)
   }
 
   async categories(parent: { id: string }, _: any, context: Context) {
-    return context.loaders.categoryLoader.loadCategoriesByProducts.load(parent.id)
+    return await context.loaders.categoryLoader.loadCategoriesByProducts.load(parent.id)
   }
 
   register() {

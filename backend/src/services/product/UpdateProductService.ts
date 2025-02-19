@@ -1,8 +1,7 @@
 import { GraphQLError } from 'graphql'
 import { omit } from 'lodash'
-import { ProductRepository } from '../../database/ProductRepository'
+import { ProductRepository, UpdateProductBody } from '../../database/ProductRepository'
 import { DataLoaders } from '../../providers/DataLoaders'
-import { UpdateProductBody } from '../../validation/product/UpdateProductMutation'
 import { Service } from '../Service'
 
 export class UpdateProductService extends Service {

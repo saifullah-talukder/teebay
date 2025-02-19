@@ -1,8 +1,9 @@
 import { GraphQLError } from 'graphql'
 import { omit } from 'lodash'
 import { CreateProductPayload } from '../validation/product/CreateProductMutation'
-import { UpdateProductBody } from '../validation/product/UpdateProductMutation'
 import Repository from './Repository'
+
+export type UpdateProductBody = { id: string } & Partial<CreateProductPayload>
 
 export class ProductRepository extends Repository {
   async findProducts() {

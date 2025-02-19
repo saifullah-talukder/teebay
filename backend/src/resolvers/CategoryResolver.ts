@@ -1,10 +1,10 @@
-import { FindCategoriesService } from '../services/category/FIndCategoriesService'
+import { FindCategoriesService } from '../services/category/FindCategoriesService'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
 export class CategoryTypeResolver extends Resolver {
-  async products(parent: { name: string }, _: any, { loaders }: Context) {
-    return loaders.productLoader.loadProductsByCategory.load(parent.name)
+  async products(parent: { name: string }, _: any, context: Context) {
+    return await context.loaders.productLoader.loadProductsByCategory.load(parent.name)
   }
 
   register() {

@@ -1,42 +1,37 @@
 import DataLoader from 'dataloader'
-import { prismaClient } from '../providers/PrismaClient'
+import { RentalRepository } from '../database/RentalRepository'
 import Loader from './Loader'
 
 export class RentalLoader extends Loader {
-  loadRentalsByProductId = new DataLoader(async (productIds: readonly string[]) => {
-    const rentals = await prismaClient.rental.findMany({
-      where: { productId: { in: productIds as string[] } },
-    })
+  rentalRepository: RentalRepository
+
+  constructor() {
+    super()
+    this.rentalRepository = new RentalRepository()
+  }
+
+  loadRentalsByProduct = new DataLoader(async (productIds: readonly string[]) => {
+    const rentals = await this.rentalRepository.findRentalsByProduct(productIds as string[])
     return productIds.map(id => rentals.filter(rental => rental.productId === id))
   })
 
-  loadRentalsByOwner = new DataLoader(async (userIds: readonly string[]) => {
-    const rentals = await prismaClient.rental.findMany({
-      where: { ownerId: { in: userIds as string[] } },
-    })
-
-    const rentalsByOwner = userIds.map(userId => {
+  loadRentalsByOwner = new DataLoader(async (ownerIds: readonly string[]) => {
+    const rentals = await this.rentalRepository.findRentalsByOwner(ownerIds as string[])
+    return ownerIds.map(userId => {
       return rentals.filter(rentar => rentar.ownerId === userId)
     })
-
-    return rentalsByOwner
   })
 
-  loadRentalsByRenter = new DataLoader(async (userIds: readonly string[]) => {
-    const rentals = await prismaClient.rental.findMany({
-      where: { renterId: { in: userIds as string[] } },
-    })
-
-    const rentalsByRenter = userIds.map(userId => {
+  loadRentalsByRenter = new DataLoader(async (renterIds: readonly string[]) => {
+    const rentals = await this.rentalRepository.findRentalsByRenter(renterIds as string[])
+    return renterIds.map(userId => {
       return rentals.filter(rentar => rentar.renterId === userId)
     })
-
-    return rentalsByRenter
   })
 
   register() {
     return {
-      loadRentalsByProductId: this.loadRentalsByProductId,
+      loadRentalsByProduct: this.loadRentalsByProduct,
       loadRentalsByOwner: this.loadRentalsByOwner,
       loadRentalsByRenter: this.loadRentalsByRenter,
     }

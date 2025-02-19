@@ -56,8 +56,9 @@ type Query {
   product(id: ID!): Product
   categories: [Category!]!
   productsByOwner: [Product!]!
+  rentalsByOwner: [Rental!]!
+  rentalsByRenter: [Rental!]!
   myTransactions: [Transaction!]!
-  myRentals: [Rental!]!
 }
 
 type Mutation {
