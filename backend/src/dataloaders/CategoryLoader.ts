@@ -3,7 +3,7 @@ import { prismaClient } from '../providers/PrismaClient'
 import Loader from './Loader'
 
 export class CategoryLoader extends Loader {
-  categoriesOfProductsLoader = new DataLoader(async (productIds: readonly string[]) => {
+  loadCategoriesOfProducts = new DataLoader(async (productIds: readonly string[]) => {
     // Get all categories for all requested product IDs in one query
     const productCategories = await prismaClient.category.findMany({
       where: {
@@ -27,6 +27,6 @@ export class CategoryLoader extends Loader {
   })
 
   register() {
-    return { categoriesOfProductsLoader: this.categoriesOfProductsLoader }
+    return { loadCategoriesOfProducts: this.loadCategoriesOfProducts }
   }
 }

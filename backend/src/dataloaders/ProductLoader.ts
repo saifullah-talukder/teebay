@@ -3,7 +3,7 @@ import { prismaClient } from '../providers/PrismaClient'
 import Loader from './Loader'
 
 export class ProductLoader extends Loader {
-  productsByIdLoader = new DataLoader(async (ids: readonly string[]) => {
+  loadProductsById = new DataLoader(async (ids: readonly string[]) => {
     const products = await prismaClient.product.findMany({
       where: { id: { in: ids as string[] } },
       include: {
@@ -16,7 +16,7 @@ export class ProductLoader extends Loader {
     return ids.map(id => products.find(product => product.id === id) || null)
   })
 
-  productsOfUsersLoader = new DataLoader(async (userIds: readonly string[]) => {
+  loadProductsByOwner = new DataLoader(async (userIds: readonly string[]) => {
     const products = await prismaClient.product.findMany({
       where: { ownerId: { in: userIds as string[] } },
       include: {
@@ -33,7 +33,7 @@ export class ProductLoader extends Loader {
     return productsByOwner
   })
 
-  productsByCategoryLoader = new DataLoader(async (categories: readonly string[]) => {
+  loadProductsByCategory = new DataLoader(async (categories: readonly string[]) => {
     const products = await prismaClient.product.findMany({
       where: {
         categories: {
@@ -57,9 +57,9 @@ export class ProductLoader extends Loader {
 
   register() {
     return {
-      productsByIdLoader: this.productsByIdLoader,
-      productsOfUsersLoader: this.productsOfUsersLoader,
-      productsByCategoryLoader: this.productsByCategoryLoader,
+      loadProductsById: this.loadProductsById,
+      loadProductsByOwner: this.loadProductsByOwner,
+      loadProductsByCategory: this.loadProductsByCategory,
     }
   }
 }

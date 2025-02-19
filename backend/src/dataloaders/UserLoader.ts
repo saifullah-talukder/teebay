@@ -3,7 +3,7 @@ import { prismaClient } from '../providers/PrismaClient'
 import Loader from './Loader'
 
 export class UserLoader extends Loader {
-  userByIdLoader = new DataLoader(async (userIds: readonly string[]) => {
+  loadUsersById = new DataLoader(async (userIds: readonly string[]) => {
     const users = await prismaClient.user.findMany({
       where: { id: { in: userIds as string[] } },
     })
@@ -13,6 +13,6 @@ export class UserLoader extends Loader {
   })
 
   register() {
-    return { userByIdLoader: this.userByIdLoader }
+    return { loadUsersById: this.loadUsersById }
   }
 }
