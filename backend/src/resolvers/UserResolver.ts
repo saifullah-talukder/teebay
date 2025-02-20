@@ -1,52 +1,26 @@
-import { prismaClient } from '../providers/PrismaClient'
+import { FindUsersService } from '../services/user/FindUsersService'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
 
 export class UserTypeResolver extends Resolver {
   async products(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.product.findMany({
-      where: { ownerId: parent.id },
-    })
+    return await context.loaders.productLoader.loadProductsByOwner.load(parent.id)
   }
 
   async boughtProducts(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.transaction.findMany({
-      where: { buyerId: parent.id },
-      include: {
-        product: true,
-        seller: true,
-      },
-    })
+    return await context.loaders.transactionLoader.loadTransactionsByBuyer.load(parent.id)
   }
 
   async soldProducts(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.transaction.findMany({
-      where: { sellerId: parent.id },
-      include: {
-        product: true,
-        buyer: true,
-      },
-    })
+    return await context.loaders.transactionLoader.loadTransactionsBySeller.load(parent.id)
   }
 
   async rentedProducts(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.rental.findMany({
-      where: { renterId: parent.id },
-      include: {
-        product: true,
-        owner: true,
-      },
-    })
+    return await context.loaders.rentalLoader.loadRentalsByRenter.load(parent.id)
   }
 
   async lentProducts(parent: { id: string }, _: any, context: Context) {
-    return prismaClient.rental.findMany({
-      where: { ownerId: parent.id },
-      include: {
-        product: true,
-        renter: true,
-      },
-    })
+    return await context.loaders.rentalLoader.loadRentalsByOwner.load(parent.id)
   }
 
   register() {
@@ -62,32 +36,11 @@ export class UserTypeResolver extends Resolver {
 
 export class UserQueryResolver extends Resolver {
   async users(_: any, __: any, context: Context) {
-    return prismaClient.user.findMany()
+    return await new FindUsersService().execute()
   }
 
   async user(_: any, { id }: { id: string }, context: Context) {
-    return prismaClient.user.findUnique({
-      where: { id },
-    })
-  }
-
-  register() {
-    return {
-      users: this.users.bind(this),
-      user: this.user.bind(this),
-    }
-  }
-}
-
-export class UserMutationResolver extends Resolver {
-  async users(_: any, __: any, context: Context) {
-    return prismaClient.user.findMany()
-  }
-
-  async user(_: any, { id }: { id: string }, context: Context) {
-    return prismaClient.user.findUnique({
-      where: { id },
-    })
+    return await context.loaders.userLoader.loadUsersById.load(id)
   }
 
   register() {

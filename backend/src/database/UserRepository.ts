@@ -3,6 +3,16 @@ import Repository from './Repository'
 import { SignupPayload } from '../validation/auth/SignupMutation'
 
 export class UserRepository extends Repository {
+  async findUsers() {
+    try {
+      return await this.prismaClient.user.findMany()
+    } catch (error) {
+      throw new GraphQLError('Failed to fetch users', {
+        extensions: { code: 'DATABASE_ERROR', error: (error as Error).message },
+      })
+    }
+  }
+
   async findUsersByIds(userIds: string[]) {
     try {
       return await this.prismaClient.user.findMany({
