@@ -1,26 +1,22 @@
-import { GraphQLError } from 'graphql'
 import { getUserId } from '../middleware/Auth'
-import { prismaClient } from '../providers/PrismaClient'
+import { BuyProductService } from '../services/transaction/BuyProductService'
+import { FindTransactionsByBuyerService } from '../services/transaction/FindTransactionsByBuyerService'
+import { FindTransactionsBySellerService } from '../services/transaction/FindTransactionsBySellerService'
 import { Context } from '../types/Apollo'
+import { BuyProductPayload, validateBuyProductPayload } from '../validation/transaction/BuyProductMutation'
 import Resolver from './Resolver'
 
 export class TransactionTypeResolver extends Resolver {
   async product(parent: { productId: string }, _: any, context: Context) {
-    return prismaClient.product.findUnique({
-      where: { id: parent.productId },
-    })
+    return await context.loaders.productLoader.loadProductsById.load(parent.productId)
   }
 
   async buyer(parent: { buyerId: string }, _: any, context: Context) {
-    return prismaClient.user.findUnique({
-      where: { id: parent.buyerId },
-    })
+    return await context.loaders.userLoader.loadUsersById.load(parent.buyerId)
   }
 
   async seller(parent: { sellerId: string }, _: any, context: Context) {
-    return prismaClient.user.findUnique({
-      where: { id: parent.sellerId },
-    })
+    return await context.loaders.userLoader.loadUsersByEmail.load(parent.sellerId)
   }
 
   register() {
@@ -33,89 +29,29 @@ export class TransactionTypeResolver extends Resolver {
 }
 
 export class TransactionQueryResolver extends Resolver {
-  async myTransactions(_: any, __: any, context: Context) {
+  async transactionsBySeller(_: any, __: any, context: Context) {
     const userId = getUserId(context)
-    return prismaClient.transaction.findMany({
-      where: {
-        OR: [{ buyerId: userId }, { sellerId: userId }],
-      },
-      include: {
-        product: true,
-        buyer: true,
-        seller: true,
-      },
-    })
+    return await new FindTransactionsBySellerService(userId, context.loaders).execute()
+  }
+
+  async transactionsByBuyer(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
+    return await new FindTransactionsByBuyerService(userId, context.loaders).execute()
   }
 
   register() {
     return {
-      myTransactions: this.myTransactions.bind(this),
+      transactionsBySeller: this.transactionsBySeller.bind(this),
+      transactionsByBuyer: this.transactionsByBuyer.bind(this),
     }
   }
 }
 
 export class TransactionMutationResolver extends Resolver {
-  async buyProduct(_: any, { productId }: { productId: string }, context: Context) {
+  async buyProduct(_: any, payload: BuyProductPayload, context: Context) {
     const buyerId = getUserId(context)
-
-    // Get the product
-    const product = await prismaClient.product.findUnique({
-      where: { id: productId },
-    })
-
-    if (!product) {
-      throw new GraphQLError('Product not found', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    // Check if product is available
-    if (!product.isAvailable) {
-      throw new GraphQLError('Product is not available for purchase', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    // Check if user is trying to buy their own product
-    if (product.ownerId === buyerId) {
-      throw new GraphQLError('Cannot buy your own product', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      })
-    }
-
-    // Start a transaction
-    const transaction = await prismaClient.$transaction(async prisma => {
-      // Create the transaction record
-      const newTransaction = await prisma.transaction.create({
-        data: {
-          product: {
-            connect: { id: productId },
-          },
-          buyer: {
-            connect: { id: buyerId },
-          },
-          seller: {
-            connect: { id: product.ownerId },
-          },
-          price: product.price,
-        },
-        include: {
-          product: true,
-          buyer: true,
-          seller: true,
-        },
-      })
-
-      // Update product availability
-      await prisma.product.update({
-        where: { id: productId },
-        data: { isAvailable: false },
-      })
-
-      return newTransaction
-    })
-
-    return transaction
+    const { productId } = validateBuyProductPayload(payload)
+    return await new BuyProductService(buyerId, productId, context.loaders).execute()
   }
 
   register() {

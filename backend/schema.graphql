@@ -58,7 +58,8 @@ type Query {
   productsByOwner: [Product!]!
   rentalsByOwner: [Rental!]!
   rentalsByRenter: [Rental!]!
-  myTransactions: [Transaction!]!
+  transactionsBySeller: [Transaction!]!
+  transactionsByBuyer: [Transaction!]!
 }
 
 type Mutation {
