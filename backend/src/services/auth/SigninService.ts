@@ -3,16 +3,16 @@ import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../../middleware/Auth'
 import { DataLoaders } from '../../providers/DataLoaders'
-import { LoginPayload } from '../../validation/auth/LoginMutation'
+import { SigninPayload } from '../../validation/auth/SigninMutation'
 import { Service } from '../Service'
 
-export class LoginService extends Service {
-  constructor(private loginPayload: LoginPayload, private loaders: DataLoaders) {
+export class SigninService extends Service {
+  constructor(private signinPayload: SigninPayload, private loaders: DataLoaders) {
     super()
   }
 
   async execute() {
-    const user = await this.loaders.userLoader.loadUsersByEmail.load(this.loginPayload.email)
+    const user = await this.loaders.userLoader.loadUsersByEmail.load(this.signinPayload.email)
 
     if (!user) {
       throw new GraphQLError('Invalid email or password', {
@@ -20,7 +20,7 @@ export class LoginService extends Service {
       })
     }
 
-    const validPassword = await bcrypt.compare(this.loginPayload.password, user.password)
+    const validPassword = await bcrypt.compare(this.signinPayload.password, user.password)
     if (!validPassword) {
       throw new GraphQLError('Invalid email or password', {
         extensions: { code: 'BAD_USER_INPUT' },
