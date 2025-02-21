@@ -3,7 +3,7 @@ import Pages from './providers/Pages'
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="min-h-screen">
       <Pages />
       <ToastContainer
         transition={Slide}

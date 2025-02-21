@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { publicRoutes } from '../config'
 import Dashboard from '../pages/Dashboard'
-import ERROR404 from '../pages/ERROR404'
+import ErrorPage from '../pages/ErrorPage'
 import SignIn from '../pages/SignIn'
 import SignUp from '../pages/SignUp'
 
@@ -36,7 +36,7 @@ const Pages: React.FC = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Route>
-      <Route path="*" element={<ERROR404 />} />
+      <Route path="*" element={<ErrorPage isAppError={false} />} />
     </Routes>
   )
 }
