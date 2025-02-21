@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
+
 # MacBook Specific
 *.DS_Store
