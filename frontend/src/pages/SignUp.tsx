@@ -41,7 +41,7 @@ const SignUp: React.FC = () => {
           <TextInputField
             label="Address"
             placeholder="Address"
-            validationSchema={z.string().min(3, 'Address must be minimum 1 character long')}
+            validationSchema={z.string().min(3, 'Address must be minimum 3 characters long')}
             onTextChange={text => setSignUpState('address', text)}
           />
           <div className="flex gap-x-4">

@@ -9,7 +9,7 @@ const Sidenav: React.FC = () => {
   return (
     <div className="sticky top-0 w-full">
       <div className="h-screen w-full py-4 bg-gray-100">
-        <div className="flex h-full w-full flex-col justify-between transition-all duration-200 items-start px-3">
+        <div className="flex h-full w-full flex-col justify-between transition-all duration-200 items-start px-4">
           <div className="w-full flex flex-col gap-y-3">
             <div className="flex gap-x-4 items-center mb-4">
               <img src="/ecommerce-logo.svg" alt="Teebay Logo" className="w-10 h-auto" />
@@ -48,7 +48,7 @@ const PageWithSideNav: React.FC<LayoutProps> = ({ children }) => {
         <Sidenav />
       </div>
 
-      <div className="w-full pb-4">{children}</div>
+      <div className="w-full pb-4 bg-slate-50">{children}</div>
     </div>
   )
 }
