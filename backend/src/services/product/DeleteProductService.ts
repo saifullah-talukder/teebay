@@ -26,8 +26,8 @@ export class DeleteProductService extends Service {
       })
     }
 
-    const transactions = await this.loaders.transactionLoader.loadTransactionsByProductId.load(this.productId)
-    const rentals = await this.loaders.rentalLoader.loadRentalsByProductId.load(this.productId)
+    const transactions = await this.loaders.transactionLoader.loadTransactionsByProduct.load(this.productId)
+    const rentals = await this.loaders.rentalLoader.loadRentalsByProduct.load(this.productId)
 
     if (transactions.length > 0 || rentals.length > 0) {
       throw new GraphQLError('Cannot delete product that has transactions or rentals', {
