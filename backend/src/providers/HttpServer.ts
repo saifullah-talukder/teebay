@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import express, { Express } from 'express'
 import { readFileSync } from 'fs'
 import path from 'path'
@@ -26,12 +27,12 @@ export async function createHttpServer(): Promise<Express> {
   await server.start()
 
   const app = express()
-  // app.use(
-  //   cors({
-  //     origin: [],
-  //     // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  //   })
-  // )
+  app.use(
+    cors({
+      origin: ['http://localhost:3000'],
+      // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    })
+  )
   app.use(bodyParser.json())
 
   app.use(

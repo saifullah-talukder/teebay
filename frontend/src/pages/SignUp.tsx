@@ -1,18 +1,34 @@
+import { useMutation } from '@apollo/client'
+import { omit } from 'lodash'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
-import PrimaryActionButton from '../components/shared/PrimaryActionButton'
 import PasswordInputField from '../components/form/PasswordInputField'
 import TextInputField from '../components/form/TextInputfield'
-import { useSignUpStore } from '../store/auth/SignupStore'
+import PrimaryActionButton from '../components/shared/PrimaryActionButton'
+import { SIGN_UP } from '../graphql/Auth'
+import { useSignUpStore } from '../store/auth/SignUpStore'
 import { phoneSchema } from '../utils/Validation'
 
 const SignUp: React.FC = () => {
   const { state, setSignUpState } = useSignUpStore()
+  const [signup, { loading, error }] = useMutation(SIGN_UP)
   const navigate = useNavigate()
 
   const handleSubmit = () => {
-    console.log(state)
+    signup({ variables: { ...omit(state, 'confirmPassword') } }).then(res => {
+      toast.success('Sign up successful')
+      navigate('/signin')
+      console.log('data', res.data.signup)
+    })
   }
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message)
+    }
+  }, [error])
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100">
@@ -68,10 +84,20 @@ const SignUp: React.FC = () => {
             />
           </div>
 
-          <PrimaryActionButton type="submit" label="Sign Up" onClick={handleSubmit} />
+          <PrimaryActionButton
+            type="submit"
+            label="Sign Up"
+            onClick={e => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+            isLoading={loading}
+            // isDisabled={}
+          />
           <div className="flex justify-center items-center">
             <span>Already have an account?</span>
             <PrimaryActionButton
+              type="button"
               className="bg-transparent hover:bg-transparent shadow-none text-blue-600 h-auto w-auto text-lg"
               label="Sign In"
               onClick={() => navigate('/signin')}

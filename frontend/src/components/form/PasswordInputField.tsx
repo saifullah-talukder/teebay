@@ -65,6 +65,7 @@ export default function PasswordInputField(props: PasswordInputFieldProps) {
           <FiUnlock />
         </div>
         <button
+          type="button"
           className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500"
           onClick={() => setPasswordVisible(!isPasswordVisible)}
         >

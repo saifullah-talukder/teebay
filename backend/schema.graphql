@@ -3,6 +3,8 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
+  address: String!
+  phone: String!
   products: [Product!]!
   boughtProducts: [Transaction!]!
   soldProducts: [Transaction!]!
@@ -63,7 +65,14 @@ type Query {
 }
 
 type Mutation {
-  signup(email: String!, password: String!, firstName: String!, lastName: String!): User!
+  signup(
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    address: String!
+    phone: String!
+  ): User!
   signin(email: String!, password: String!): AuthPayload!
 
   createProduct(
