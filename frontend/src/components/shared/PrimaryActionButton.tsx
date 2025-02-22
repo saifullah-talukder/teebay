@@ -26,7 +26,7 @@ export default function PrimaryActionButton(props: ButtonProps) {
       disabled={props.isDisabled ?? false}
       onClick={props.onClick}
       className={twMerge(
-        'bg-blue-600 hover:bg-blue-700 relative flex h-10 w-auto shrink-0 items-center justify-center rounded-full px-6 text-xs font-medium text-white shadow-lg shadow-blue-600y/40 hover:shadow-blue-700/40 transition-all duration-300 cursor-pointer',
+        'bg-blue-600 hover:bg-blue-700 relative flex h-10 w-auto shrink-0 items-center justify-center rounded-full px-6 text-xs font-medium text-white shadow-lg shadow-blue-600/40 hover:shadow-blue-700/40 transition-all duration-300 cursor-pointer',
         props.className
       )}
     >

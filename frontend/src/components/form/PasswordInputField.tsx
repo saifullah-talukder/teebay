@@ -72,7 +72,7 @@ export default function PasswordInputField(props: PasswordInputFieldProps) {
         </button>
       </div>
       {props.validationSchema && !!text && !isFocused && (
-        <span className="pl-4 text-xs font-normal italic text-red-500">{errorMessage}</span>
+        <span className="pl-4 text-xs font-normal italic text-red-600">{errorMessage}</span>
       )}
     </div>
   )

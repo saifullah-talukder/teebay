@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import PrimaryActionButton from '../components/button/PrimaryActionButton'
+import PrimaryActionButton from '../components/shared/PrimaryActionButton'
 import PasswordInputField from '../components/form/PasswordInputField'
 import TextInputField from '../components/form/TextInputfield'
 import { useSignInStore } from '../store/auth/SignInStore'

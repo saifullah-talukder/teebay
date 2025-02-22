@@ -98,7 +98,7 @@ const TextInputField = forwardRef<unknown, TextInputFieldProps>((props, ref) => 
         <div className="text-slate-800 absolute left-5 top-1/2 -translate-y-1/2">{!!props.icon && props.icon}</div>
       </div>
       {hasValidationSchema && !!textInput && !isFocused && (
-        <span className="h-3 pl-4 text-xs font-normal italic text-blue-600">{errorMessage}</span>
+        <span className="h-3 pl-4 text-xs font-normal italic text-red-600">{errorMessage}</span>
       )}
     </div>
   )

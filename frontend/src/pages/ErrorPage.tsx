@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import PrimaryActionButton from '../components/button/PrimaryActionButton'
+import PrimaryActionButton from '../components/shared/PrimaryActionButton'
 import { ErrorData } from './ErrorBoundary'
 
 interface ErrorPageProps {
@@ -25,7 +25,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ isAppError, errorData }) => {
         <h1 className="text-3xl text-secondary font-semibold">
           {isAppError ? 'Something went wrong!' : "The page you are looking for doesn't exist!"}
         </h1>
-        <PrimaryActionButton onClick={() => navigate('/signin')} label="Go to Home Page"></PrimaryActionButton>
+        <PrimaryActionButton onClick={() => navigate('/all-products')} label="Go to Home Page"></PrimaryActionButton>
       </div>
     </div>
   )

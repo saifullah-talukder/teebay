@@ -1,5 +1,5 @@
 import { Slide, ToastContainer } from 'react-toastify'
-import Pages from './providers/Pages'
+import Pages from './components/wrappers/Pages'
 
 const App: React.FC = () => {
   return (
