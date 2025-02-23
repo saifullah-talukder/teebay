@@ -1,17 +1,59 @@
+import { useMutation } from '@apollo/client'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
-import PrimaryActionButton from '../components/shared/PrimaryActionButton'
 import PasswordInputField from '../components/form/PasswordInputField'
 import TextInputField from '../components/form/TextInputfield'
+import PrimaryActionButton from '../components/shared/PrimaryActionButton'
+import { SIGN_IN } from '../graphql/Auth'
+import { client, updateAuthToken } from '../graphql/client'
+import { GET_USER } from '../graphql/User'
 import { useSignInStore } from '../store/auth/SignInStore'
+import { User } from '../types/graphql'
 
 const SignIn: React.FC = () => {
-  const { state, setSignInState } = useSignInStore()
+  const { state, isValidated, errorMessage, setSignInState } = useSignInStore()
+  const [signin, { loading, error }] = useMutation(SIGN_IN)
   const navigate = useNavigate()
 
-  const handleSubmit = () => {
-    console.log(state)
+  const handleSubmit = async () => {
+    if (!isValidated) {
+      toast.error(`Error trying to sign in. ${errorMessage}`)
+      return
+    }
+
+    try {
+      const response = await signin({
+        variables: state,
+      })
+
+      const userData = response.data.signin.user as User
+      updateAuthToken(response.data.signin.token)
+
+      client.cache.writeQuery({
+        query: GET_USER,
+        variables: { id: userData.id },
+        data: {
+          user: {
+            __typename: 'User',
+            ...userData,
+          },
+        },
+      })
+
+      toast.success(`Welcome, ${userData.firstName} ${userData.lastName}`)
+      navigate('/product/all')
+    } catch (error) {
+      console.error(`Sign in failed. ${(error as Error).message}`)
+    }
   }
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message)
+    }
+  }, [error])
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100">
@@ -25,7 +67,15 @@ const SignIn: React.FC = () => {
             onTextChange={text => setSignInState('email', text)}
           />
           <PasswordInputField label="Password" onTextChange={text => setSignInState('password', text)} />
-          <PrimaryActionButton type="submit" label="Sign In" onClick={handleSubmit} />
+          <PrimaryActionButton
+            type="submit"
+            label="Sign In"
+            onClick={e => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+            isLoading={loading}
+          />
           <div className="flex justify-center items-center">
             <span>Don't have an account?</span>
             <PrimaryActionButton

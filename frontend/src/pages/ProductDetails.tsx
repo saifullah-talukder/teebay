@@ -1,16 +1,32 @@
+import { useQuery } from '@apollo/client'
 import React, { useState } from 'react'
-import PrimaryActionButton from '../components/shared/PrimaryActionButton'
-import { mockData } from '../utils/data'
-import { formatDateWithOrdinal } from '../utils/DateTime'
+import { useParams } from 'react-router-dom'
 import BuyProductDialog from '../components/product/BuyProductDialog'
 import RentProductDialog from '../components/product/RentProductDialog'
+import Loading from '../components/shared/Loading'
+import LoadingError from '../components/shared/LoadingError'
+import PrimaryActionButton from '../components/shared/PrimaryActionButton'
+import { GET_PRODUCT } from '../graphql/Product'
+import { ProductData, ProductVars } from '../types/graphql'
+import { formatDateWithOrdinal } from '../utils/DateTime'
 
 const ProductDetails: React.FC = () => {
   const [isRentDialogOpen, setIsRentDialogOpen] = useState(false)
   const [isBuyDialogOpen, setIsBuyDialogOpen] = useState(false)
+  const { id: productId } = useParams()
+  const { loading, error, data } = useQuery<ProductData, ProductVars>(GET_PRODUCT, {
+    variables: { id: productId as string },
+  })
 
-  const { products } = mockData
-  const product = products[0]
+  if (loading) {
+    return <Loading />
+  } else if (error) {
+    return <LoadingError errorMessage="Error fetching product" />
+  } else if (!data?.product) {
+    return <LoadingError errorMessage="Product not found" />
+  }
+
+  const { product } = data
 
   const handleBuy = () => {}
   const handleRent = () => {}

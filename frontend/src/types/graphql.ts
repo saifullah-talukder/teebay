@@ -3,11 +3,8 @@ export type User = {
   email: string
   firstName: string
   lastName: string
-  products: Product[]
-  boughtProducts: Transaction[]
-  soldProducts: Transaction[]
-  rentedProducts: Rental[]
-  lentProducts: Rental[]
+  address: string
+  phone: string
 }
 
 export type Product = {
@@ -15,18 +12,29 @@ export type Product = {
   title: string
   description: string
   price: number
-  rentPrice?: number
+  rentPrice?: number | null
   categories: Category[]
-  owner: User
+  owner: Omit<User, 'email' | 'address' | 'phone'>
   isAvailable: boolean
   isRentable: boolean
   createdAt: string
   updatedAt: string
 }
 
+export type ProductsData = {
+  products: Product[]
+}
+
+export type ProductData = {
+  product: Product
+}
+
+export type ProductVars = {
+  id: string
+}
+
 export type Category = {
   name: string
-  products: Product[]
 }
 
 export type Transaction = {

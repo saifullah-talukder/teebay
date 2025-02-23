@@ -1,10 +1,17 @@
 import React, { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { sidenavRoutes } from '../../config'
+import { client, updateAuthToken } from '../../graphql/client'
 import PrimaryActionButton from '../shared/PrimaryActionButton'
 
 const Sidenav: React.FC = () => {
   const navigate = useNavigate()
+
+  const handleSignOut = () => {
+    updateAuthToken(null)
+    client.resetStore()
+    navigate('/signin')
+  }
 
   return (
     <div className="sticky top-0 w-full">
@@ -28,7 +35,7 @@ const Sidenav: React.FC = () => {
             <PrimaryActionButton
               className="w-full bg-blue-100 hover:bg-blue-200 shadow-sm rounded-md text-blue-700"
               label="Sign Out"
-              onClick={() => {}}
+              onClick={handleSignOut}
             />
           </div>
         </div>

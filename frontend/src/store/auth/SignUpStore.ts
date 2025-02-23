@@ -24,9 +24,7 @@ export const useSignUpStore = create<SignUpStore>()(
   devtools(
     set => ({
       state: initialState,
-
       isValidated: false,
-
       errorMessage: null,
 
       setSignUpState: (key, value) =>

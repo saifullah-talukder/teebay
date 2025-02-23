@@ -8,25 +8,46 @@ import PasswordInputField from '../components/form/PasswordInputField'
 import TextInputField from '../components/form/TextInputfield'
 import PrimaryActionButton from '../components/shared/PrimaryActionButton'
 import { SIGN_UP } from '../graphql/Auth'
+import { client } from '../graphql/client'
+import { GET_USER } from '../graphql/User'
 import { useSignUpStore } from '../store/auth/SignUpStore'
 import { phoneSchema } from '../utils/Validation'
+import { User } from '../types/graphql'
 
 const SignUp: React.FC = () => {
   const { state, isValidated, errorMessage, setSignUpState } = useSignUpStore()
   const [signup, { loading, error }] = useMutation(SIGN_UP)
   const navigate = useNavigate()
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isValidated) {
       toast.error(`Error trying to sign up. ${errorMessage}`)
       return
     }
 
-    signup({ variables: { ...omit(state, 'confirmPassword') } }).then(res => {
+    try {
+      const response = await signup({
+        variables: { ...omit(state, 'confirmPassword') },
+      })
+
+      const userData = response.data.signup as User
+
+      client.cache.writeQuery({
+        query: GET_USER,
+        variables: { id: userData.id },
+        data: {
+          user: {
+            __typename: 'User',
+            ...userData,
+          },
+        },
+      })
+
       toast.success('Sign up successful')
       navigate('/signin')
-      console.log('data', res.data.signup)
-    })
+    } catch (error) {
+      console.error(`Sign up failed. ${(error as Error).message}`)
+    }
   }
 
   useEffect(() => {
