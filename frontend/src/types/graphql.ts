@@ -29,6 +29,10 @@ export type ProductData = {
   product: Product
 }
 
+export type MyProductsData = {
+  me: ProductsData
+}
+
 export type ProductVars = {
   id: string
 }

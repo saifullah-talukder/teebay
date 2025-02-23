@@ -54,8 +54,8 @@ const ProductDetails: React.FC = () => {
           <h2 className="text-slate-800 text-xl">{product.title}</h2>
           <span className="text-slate-500 text-sm">{`Categories: ${product.categories.map(category => category.name).join(', ')}`}</span>
           <span className="text-slate-500 text-sm">{`Price: $${product.price}`}</span>
-          <span className="text-slate-500 text-xs">{product.description}</span>
-          <span className="text-slate-500 text-sm">{`Date Posted: ${formatDateWithOrdinal(product.createdAt)}`}</span>
+          <span className="text-slate-500 text-xs">{`Description: ${product.description}`}</span>
+          <span className="text-slate-500 text-sm">{`Date Posted: ${formatDateWithOrdinal(new Date(Number(product.createdAt)))}`}</span>
         </div>
         <div className="flex gap-x-4 mt-4">
           <PrimaryActionButton label="Buy" onClick={() => setIsBuyDialogOpen(true)} />

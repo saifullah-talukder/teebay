@@ -1,3 +1,4 @@
+import { getUserId } from '../middleware/Auth'
 import { FindUsersService } from '../services/user/FindUsersService'
 import { Context } from '../types/Apollo'
 import Resolver from './Resolver'
@@ -36,17 +37,25 @@ export class UserTypeResolver extends Resolver {
 
 export class UserQueryResolver extends Resolver {
   async users(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
     return await new FindUsersService().execute()
   }
 
   async user(_: any, { id }: { id: string }, context: Context) {
+    const userId = getUserId(context)
     return await context.loaders.userLoader.loadUsersById.load(id)
+  }
+
+  async me(_: any, __: any, context: Context) {
+    const userId = getUserId(context)
+    return await context.loaders.userLoader.loadUsersById.load(userId)
   }
 
   register() {
     return {
       users: this.users.bind(this),
       user: this.user.bind(this),
+      me: this.me.bind(this),
     }
   }
 }

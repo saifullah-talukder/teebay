@@ -74,3 +74,29 @@ export const CREATE_PRODUCT = gql`
     }
   }
 `
+
+export const GET_MY_PRODUCTS = gql`
+  query GetMyProducts {
+    me {
+      products {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`

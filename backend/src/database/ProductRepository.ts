@@ -48,6 +48,8 @@ export class ProductRepository extends Repository {
         include: {
           owner: true,
           categories: true,
+          rentals: true,
+          transactions: true,
         },
       })
     } catch (error) {
@@ -68,7 +70,10 @@ export class ProductRepository extends Repository {
           },
         },
         include: {
+          owner: true,
           categories: true,
+          rentals: true,
+          transactions: true,
         },
       })
     } catch (error) {

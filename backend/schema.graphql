@@ -54,6 +54,7 @@ type Rental {
 type Query {
   users: [User!]!
   user(id: ID!): User
+  me: User
   products: [Product!]!
   product(id: ID!): Product
   categories: [Category!]!
