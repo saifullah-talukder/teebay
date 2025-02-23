@@ -1,23 +1,16 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-
-type SignUpState = {
-  firstName: string
-  lastName: string
-  address: string
-  email: string
-  phone: string
-  password: string
-  confirmPassword: string
-}
+import { SignupPayload, signupSchema } from '../../validation/SignUp'
 
 type SignUpStore = {
-  state: SignUpState
-  setSignUpState: <T extends keyof SignUpState>(key: T, value: SignUpState[T]) => void
+  state: SignupPayload
+  isValidated: boolean
+  errorMessage: string | null
+  setSignUpState: <T extends keyof SignupPayload>(key: T, value: SignupPayload[T]) => void
   reset: () => void
 }
 
-const initialState: SignUpState = {
+const initialState: SignupPayload = {
   firstName: '',
   lastName: '',
   address: '',
@@ -32,9 +25,30 @@ export const useSignUpStore = create<SignUpStore>()(
     set => ({
       state: initialState,
 
+      isValidated: false,
+
+      errorMessage: null,
+
       setSignUpState: (key, value) =>
         set(store => {
-          return { state: { ...store.state, [key]: value } }
+          const newState = { ...store.state, [key]: value }
+          const validation = signupSchema.safeParse(newState)
+          const newStore = {
+            state: { ...store.state, [key]: value },
+            isValidated: validation.success,
+          }
+
+          if (!validation.success) {
+            const messages = []
+            for (const [key, value] of Object.entries(validation.error.flatten().fieldErrors)) {
+              messages.push(`${key} - ${value}`)
+            }
+
+            const message = messages.length ? messages.join('\n') : 'Validation Error'
+            return { ...newStore, errorMessage: message }
+          }
+
+          return newStore
         }),
 
       reset: () =>

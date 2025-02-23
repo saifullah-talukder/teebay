@@ -12,11 +12,16 @@ import { useSignUpStore } from '../store/auth/SignUpStore'
 import { phoneSchema } from '../utils/Validation'
 
 const SignUp: React.FC = () => {
-  const { state, setSignUpState } = useSignUpStore()
+  const { state, isValidated, errorMessage, setSignUpState } = useSignUpStore()
   const [signup, { loading, error }] = useMutation(SIGN_UP)
   const navigate = useNavigate()
 
   const handleSubmit = () => {
+    if (!isValidated) {
+      toast.error(`Error trying to sign up. ${errorMessage}`)
+      return
+    }
+
     signup({ variables: { ...omit(state, 'confirmPassword') } }).then(res => {
       toast.success('Sign up successful')
       navigate('/signin')
@@ -92,7 +97,6 @@ const SignUp: React.FC = () => {
               handleSubmit()
             }}
             isLoading={loading}
-            // isDisabled={}
           />
           <div className="flex justify-center items-center">
             <span>Already have an account?</span>
