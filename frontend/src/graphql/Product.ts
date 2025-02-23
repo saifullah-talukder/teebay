@@ -100,3 +100,107 @@ export const GET_MY_PRODUCTS = gql`
     }
   }
 `
+
+export const GET_BOUGHT_PRODUCTS = gql`
+  query GetBoughtProducts {
+    me {
+      boughtProducts {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
+
+export const GET_SOLD_PRODUCTS = gql`
+  query GetSoldProducts {
+    me {
+      soldProducts {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
+
+export const GET_BORROWED_PRODUCTS = gql`
+  query GetBorrowedProducts {
+    me {
+      rentedProducts {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
+
+export const GET_LENT_PRODUCTS = gql`
+  query GetLentProducts {
+    me {
+      lentProducts {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`

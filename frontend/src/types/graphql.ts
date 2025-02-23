@@ -33,6 +33,22 @@ export type MyProductsData = {
   me: ProductsData
 }
 
+export type MyBoughtProductsData = {
+  me: { boughtProducts: Product[] }
+}
+
+export type MySoldProductsData = {
+  me: { soldProducts: Product[] }
+}
+
+export type MyBorrowedProductsData = {
+  me: { rentedProducts: Product[] }
+}
+
+export type MyLentProductsData = {
+  me: { lentProducts: Product[] }
+}
+
 export type ProductVars = {
   id: string
 }
