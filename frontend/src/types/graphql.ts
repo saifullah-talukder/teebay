@@ -7,6 +7,8 @@ export type User = {
   phone: string
 }
 
+type EmbeddedUser = Omit<User, 'email' | 'address' | 'phone'>
+
 export type Product = {
   id: string
   title: string
@@ -14,7 +16,7 @@ export type Product = {
   price: number
   rentPrice?: number | null
   categories: Category[]
-  owner: Omit<User, 'email' | 'address' | 'phone'>
+  owner: EmbeddedUser
   isAvailable: boolean
   isRentable: boolean
   createdAt: string
@@ -33,22 +35,6 @@ export type MyProductsData = {
   me: ProductsData
 }
 
-export type MyBoughtProductsData = {
-  me: { boughtProducts: Product[] }
-}
-
-export type MySoldProductsData = {
-  me: { soldProducts: Product[] }
-}
-
-export type MyBorrowedProductsData = {
-  me: { rentedProducts: Product[] }
-}
-
-export type MyLentProductsData = {
-  me: { lentProducts: Product[] }
-}
-
 export type ProductVars = {
   id: string
 }
@@ -64,21 +50,37 @@ export type CategoriesData = {
 export type Transaction = {
   id: string
   product: Product
-  buyer: User
-  seller: User
+  buyer: EmbeddedUser
+  seller: EmbeddedUser
   price: number
   createdAt: string
+}
+
+export type MyBoughtProductsData = {
+  me: { boughtProducts: Transaction[] }
+}
+
+export type MySoldProductsData = {
+  me: { soldProducts: Transaction[] }
 }
 
 export type Rental = {
   id: string
   product: Product
-  renter: User
-  owner: User
+  renter: EmbeddedUser
+  owner: EmbeddedUser
   startDate: string
   endDate: string
   price: number
   createdAt: string
+}
+
+export type MyBorrowedProductsData = {
+  me: { rentedProducts: Rental[] }
+}
+
+export type MyLentProductsData = {
+  me: { lentProducts: Rental[] }
 }
 
 export type AuthPayload = {

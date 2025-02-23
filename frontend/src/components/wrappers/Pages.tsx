@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { publicRoutes } from '../../config'
 import AllProducts from '../../pages/AllProducts'
+import BorrowedProducts from '../../pages/BorrowedProducts'
 import BoughtProducts from '../../pages/BoughtProducts'
 import CreateProduct from '../../pages/CreateProduct'
 import EditProduct from '../../pages/EditProduct'
@@ -52,7 +53,7 @@ const Pages: React.FC = () => {
           <Route path="my" element={<MyProducts />} />
           <Route path="bought" element={<BoughtProducts />} />
           <Route path="sold" element={<SoldProducts />} />
-          <Route path="borrowed" element={<BoughtProducts />} />
+          <Route path="borrowed" element={<BorrowedProducts />} />
           <Route path="lent" element={<LentProducts />} />
         </Route>
       </Route>

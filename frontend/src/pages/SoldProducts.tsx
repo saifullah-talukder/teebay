@@ -12,14 +12,17 @@ const SoldProducts: React.FC = () => {
   if (loading) {
     return <Loading />
   } else if (error) {
-    return <LoadingError errorMessage="Error fetching borrowed products" />
+    console.log(error)
+    return <LoadingError errorMessage="Error fetching sold products" />
   }
 
   return (
     <div className="flex flex-col justify-center items-center w-full pt-4">
       <h1 className="text-3xl text-center">SOLD PRODUCTS</h1>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        {data?.me?.soldProducts.map(product => <ProductCard key={product.id} product={product} />)}
+        {data?.me?.soldProducts.map(transaction => (
+          <ProductCard key={transaction.product.id} product={transaction.product} />
+        ))}
       </div>
     </div>
   )

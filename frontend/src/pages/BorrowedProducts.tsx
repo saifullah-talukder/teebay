@@ -19,7 +19,7 @@ const BorrowedProducts: React.FC = () => {
     <div className="flex flex-col justify-center items-center w-full pt-4">
       <h1 className="text-3xl text-center">BORROWED PRODUCTS</h1>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        {data?.me?.rentedProducts.map(product => <ProductCard key={product.id} product={product} />)}
+        {data?.me?.rentedProducts.map(rental => <ProductCard key={rental.product.id} product={rental.product} />)}
       </div>
     </div>
   )

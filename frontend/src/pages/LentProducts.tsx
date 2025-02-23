@@ -12,14 +12,14 @@ const LentProducts: React.FC = () => {
   if (loading) {
     return <Loading />
   } else if (error) {
-    return <LoadingError errorMessage="Error fetching borrowed products" />
+    return <LoadingError errorMessage="Error fetching lent products" />
   }
 
   return (
     <div className="flex flex-col justify-center items-center w-full pt-4">
-      <h1 className="text-3xl text-center">BORROWED PRODUCTS</h1>
+      <h1 className="text-3xl text-center">LENT PRODUCTS</h1>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        {data?.me?.lentProducts.map(product => <ProductCard key={product.id} product={product} />)}
+        {data?.me?.lentProducts.map(rental => <ProductCard key={rental.product.id} product={rental.product} />)}
       </div>
     </div>
   )

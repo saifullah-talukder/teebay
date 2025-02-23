@@ -106,21 +106,36 @@ export const GET_BOUGHT_PRODUCTS = gql`
     me {
       boughtProducts {
         id
-        title
-        description
-        price
-        rentPrice
-        isAvailable
-        isRentable
-        categories {
-          name
-        }
-        createdAt
-        updatedAt
-        owner {
+        buyer {
           id
           firstName
           lastName
+        }
+        seller {
+          id
+          firstName
+          lastName
+        }
+        price
+        createdAt
+        product {
+          id
+          title
+          description
+          price
+          rentPrice
+          isAvailable
+          isRentable
+          categories {
+            name
+          }
+          createdAt
+          updatedAt
+          owner {
+            id
+            firstName
+            lastName
+          }
         }
       }
     }
@@ -132,21 +147,36 @@ export const GET_SOLD_PRODUCTS = gql`
     me {
       soldProducts {
         id
-        title
-        description
-        price
-        rentPrice
-        isAvailable
-        isRentable
-        categories {
-          name
-        }
-        createdAt
-        updatedAt
-        owner {
+        buyer {
           id
           firstName
           lastName
+        }
+        seller {
+          id
+          firstName
+          lastName
+        }
+        price
+        createdAt
+        product {
+          id
+          title
+          description
+          price
+          rentPrice
+          isAvailable
+          isRentable
+          categories {
+            name
+          }
+          createdAt
+          updatedAt
+          owner {
+            id
+            firstName
+            lastName
+          }
         }
       }
     }
@@ -158,21 +188,38 @@ export const GET_BORROWED_PRODUCTS = gql`
     me {
       rentedProducts {
         id
-        title
-        description
-        price
-        rentPrice
-        isAvailable
-        isRentable
-        categories {
-          name
+        renter {
+          id
+          firstName
+          lastName
         }
-        createdAt
-        updatedAt
         owner {
           id
           firstName
           lastName
+        }
+        price
+        startDate
+        endDate
+        createdAt
+        product {
+          id
+          title
+          description
+          price
+          rentPrice
+          isAvailable
+          isRentable
+          categories {
+            name
+          }
+          createdAt
+          updatedAt
+          owner {
+            id
+            firstName
+            lastName
+          }
         }
       }
     }
@@ -184,21 +231,38 @@ export const GET_LENT_PRODUCTS = gql`
     me {
       lentProducts {
         id
-        title
-        description
-        price
-        rentPrice
-        isAvailable
-        isRentable
-        categories {
-          name
+        renter {
+          id
+          firstName
+          lastName
         }
-        createdAt
-        updatedAt
         owner {
           id
           firstName
           lastName
+        }
+        price
+        startDate
+        endDate
+        createdAt
+        product {
+          id
+          title
+          description
+          price
+          rentPrice
+          isAvailable
+          isRentable
+          categories {
+            name
+          }
+          createdAt
+          updatedAt
+          owner {
+            id
+            firstName
+            lastName
+          }
         }
       }
     }

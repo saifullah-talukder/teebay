@@ -19,7 +19,9 @@ const BoughtProducts: React.FC = () => {
     <div className="flex flex-col justify-center items-center w-full pt-4">
       <h1 className="text-3xl text-center">BOUGHT PRODUCTS</h1>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        {data?.me?.boughtProducts.map(product => <ProductCard key={product.id} product={product} />)}
+        {data?.me?.boughtProducts.map(transaction => (
+          <ProductCard key={transaction.product.id} product={transaction.product} />
+        ))}
       </div>
     </div>
   )
