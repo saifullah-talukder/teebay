@@ -44,14 +44,14 @@ const EditProduct: React.FC = () => {
           className="w-full"
           label="Price"
           placeholder="Enter price"
-          validationSchema={z.number()}
+          validationSchema={z.coerce.number()}
           onTextChange={text => setEditProductState('price', Number(text))}
         />
         <TextInputField
           className="w-full"
           label="Rent Price"
           placeholder="Enter rent price"
-          validationSchema={z.number()}
+          validationSchema={z.coerce.number()}
           onTextChange={text => setEditProductState('rentPrice', Number(text))}
         />
         <div className="w-full flex flex-row-reverse justify-between">

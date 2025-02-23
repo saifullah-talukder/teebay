@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloLink, InMemoryCache, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
+import { toast } from 'react-toastify'
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_URL,
@@ -31,11 +32,13 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
 
       if (
+        message.toLowerCase().includes('not authenticated') ||
         message.toLowerCase().includes('unauthorized') ||
         message.toLowerCase().includes('unauthenticated') ||
         message.toLowerCase().includes('invalid token')
       ) {
         updateAuthToken(null)
+        toast.error('Please sign in again')
         window.location.href = '/signin'
       }
     })

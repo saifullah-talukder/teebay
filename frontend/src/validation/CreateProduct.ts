@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { validateRequestPayload } from '../../middleware/ValidateRequestPayload'
 
 export const createProductSchema = z.object({
   title: z.string().nonempty(),
@@ -11,4 +10,3 @@ export const createProductSchema = z.object({
 })
 
 export type CreateProductPayload = z.infer<typeof createProductSchema>
-export const validateCreateProductPayload = validateRequestPayload(createProductSchema)

@@ -47,3 +47,30 @@ export const GET_PRODUCT = gql`
     }
   }
 `
+
+export const CREATE_PRODUCT = gql`
+  mutation CreateProduct(
+    $title: String!
+    $description: String!
+    $price: Float!
+    $rentPrice: Float
+    $isRentable: Boolean!
+    $categories: [String!]!
+  ) {
+    createProduct(
+      title: $title
+      description: $description
+      price: $price
+      rentPrice: $rentPrice
+      isRentable: $isRentable
+      categories: $categories
+    ) {
+      id
+      title
+      description
+      price
+      rentPrice
+      isRentable
+    }
+  }
+`

@@ -37,6 +37,10 @@ export type Category = {
   name: string
 }
 
+export type CategoriesData = {
+  categories: Category[]
+}
+
 export type Transaction = {
   id: string
   product: Product

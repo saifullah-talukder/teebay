@@ -6,8 +6,8 @@ export const updateProductSchema = z.object({
   id: z.string().nonempty('Product ID is required'),
   title: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().nullable().optional(),
-  rentPrice: z.number().optional(),
+  price: z.coerce.number().nullable().optional(),
+  rentPrice: z.coerce.number().optional(),
   isRentable: z.boolean().optional(),
   categories: z.array(z.string().nonempty()).optional(),
 })

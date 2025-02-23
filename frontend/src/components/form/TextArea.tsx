@@ -5,13 +5,15 @@ import InputFieldLabel from './InputFieldLabel'
 type TextAreaProps = HTMLAttributes<HTMLTextAreaElement> & {
   onTextChange: (input: string) => void
   label: string
+  value: string
 }
 
 export default function TextArea(props: TextAreaProps) {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
+  const { onTextChange, label, value, ...rest } = props
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    props.onTextChange(event.target.value)
+    onTextChange(event.target.value)
 
     const target = event.target as HTMLTextAreaElement
     if (textAreaRef?.current?.style) {
@@ -22,7 +24,7 @@ export default function TextArea(props: TextAreaProps) {
 
   return (
     <div className="flex flex-col gap-y-2 w-full">
-      <InputFieldLabel label={props.label} />
+      <InputFieldLabel label={label} />
       <textarea
         ref={textAreaRef}
         className={twMerge(
@@ -30,6 +32,8 @@ export default function TextArea(props: TextAreaProps) {
           props.className
         )}
         onChange={handleChange}
+        value={value}
+        {...rest}
       />
     </div>
   )
