@@ -16,14 +16,22 @@ export class RentProductService extends Service {
   async execute() {
     const { productId, startDate, endDate } = this.rentProductPayload
 
-    if (startDate >= endDate) {
-      throw new GraphQLError('End date must be after start date', {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    const today = new Date()
+
+    today.setHours(0, 0, 0, 0)
+    start.setHours(0, 0, 0, 0)
+    end.setHours(0, 0, 0, 0)
+
+    if (start.getTime() <= today.getTime()) {
+      throw new GraphQLError('Start date has to be in the future', {
         extensions: { code: 'BAD_USER_INPUT' },
       })
     }
 
-    if (startDate < new Date()) {
-      throw new GraphQLError('Start date cannot be in the past', {
+    if (end.getTime() < start.getTime()) {
+      throw new GraphQLError('End date must be equal or after start date', {
         extensions: { code: 'BAD_USER_INPUT' },
       })
     }

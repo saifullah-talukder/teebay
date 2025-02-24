@@ -27,6 +27,7 @@ const BuyProductDialog: React.FC<BuyProductDialogDialogProps> = props => {
   const handleBuy = async () => {
     try {
       await buyProduct({ variables: { productId: props.product.id } })
+      props.setIsOpen(false)
       toast.success(`Product bought successfully`)
       navigate('/product/bought')
     } catch (error) {
