@@ -23,6 +23,24 @@ Teebay is a fullstack application designed to allow users to seamlessly rent, bu
   - **Tailwind CSS**
   - **Headless UI (for accessible UI components)**
 
+## Preliminary features
+
+Here I built the login and signup features. This part has jwt secret token and hashed password features. That jwt token is used for every subsequent request. The signup form is validated both on the frontend and backend.
+
+## Implementation Documentation
+
+The multi page create product form was built using Zustand to store the user inputs across page renders. Zod was used for input validation. Approprite business logics were implemented for all CRUD operations. For example: an already bought product can not be deleted.
+
+At the start up of the backend application the categories are seeded to the database via a startup job.
+
+More details are available in the backend architecture part.
+
+## Buy/Sell/Rent Product
+
+For buying the business logic is simple. If the product is available and the user himself is not the owner the product is bought.
+
+For renting, a lot of business logic is involved. Whether startDate and endDate makes sense. Whether the product is available for rent. A bought product can not be borrowed. All these logics are implemnted in the backend. And when an user makes a bad request the user is notified.
+
 ## Backend Architecture
 
 The backend is built using TypeScript with the following general flow for handling requests:
