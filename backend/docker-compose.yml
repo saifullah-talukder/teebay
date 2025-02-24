@@ -21,7 +21,7 @@ services:
       - teebay-postgres
     environment:
       - HTTP_PORT=4000
-      - JWT_SECRET=3cc3e7647e96614c28b4744f76bcfcac6f515b1645e001c7e60e59cffb64d3d0
+      - JWT_SECRET=yourjwtsecret
       - DATABASE_URL=postgresql://postgres:yourpassword@teebay-postgres:5432/teebay
 
 volumes:
