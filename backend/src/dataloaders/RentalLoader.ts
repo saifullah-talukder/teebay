@@ -12,20 +12,20 @@ export class RentalLoader extends Loader {
 
   loadRentalsByProduct = new DataLoader(async (productIds: readonly string[]) => {
     const rentals = await this.rentalRepository.findRentalsByProduct(productIds as string[])
-    return productIds.map(id => rentals.filter(rental => rental.productId === id))
+    return productIds.map(id => rentals.filter((rental: (typeof rentals)[0]) => rental.productId === id))
   })
 
   loadRentalsByOwner = new DataLoader(async (ownerIds: readonly string[]) => {
     const rentals = await this.rentalRepository.findRentalsByOwner(ownerIds as string[])
     return ownerIds.map(userId => {
-      return rentals.filter(rentar => rentar.ownerId === userId)
+      return rentals.filter((rental: (typeof rentals)[0]) => rental.ownerId === userId)
     })
   })
 
   loadRentalsByRenter = new DataLoader(async (renterIds: readonly string[]) => {
     const rentals = await this.rentalRepository.findRentalsByRenter(renterIds as string[])
     return renterIds.map(userId => {
-      return rentals.filter(rentar => rentar.renterId === userId)
+      return rentals.filter((rental: (typeof rentals)[0]) => rental.renterId === userId)
     })
   })
 

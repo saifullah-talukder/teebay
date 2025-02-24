@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import Repository from './Repository'
 
@@ -63,34 +64,38 @@ export class TransactionRepository extends Repository {
   async createTransaction(createTransactionBody: CreateTransactionBody) {
     try {
       const { buyerId, sellerId, productId, price } = createTransactionBody
-      return await this.prismaClient.$transaction(async prisma => {
-        const newTransaction = await prisma.transaction.create({
-          data: {
-            product: {
-              connect: { id: productId },
+      return await this.prismaClient.$transaction(
+        async (
+          prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>
+        ) => {
+          const newTransaction = await prisma.transaction.create({
+            data: {
+              product: {
+                connect: { id: productId },
+              },
+              buyer: {
+                connect: { id: buyerId },
+              },
+              seller: {
+                connect: { id: sellerId },
+              },
+              price: price,
             },
-            buyer: {
-              connect: { id: buyerId },
+            include: {
+              product: true,
+              buyer: true,
+              seller: true,
             },
-            seller: {
-              connect: { id: sellerId },
-            },
-            price: price,
-          },
-          include: {
-            product: true,
-            buyer: true,
-            seller: true,
-          },
-        })
+          })
 
-        await prisma.product.update({
-          where: { id: productId },
-          data: { isAvailable: false },
-        })
+          await prisma.product.update({
+            where: { id: productId },
+            data: { isAvailable: false },
+          })
 
-        return newTransaction
-      })
+          return newTransaction
+        }
+      )
     } catch (error) {
       throw new GraphQLError('Failed to save transaction to database', {
         extensions: { code: 'DATABASE_ERROR', error: (error as Error).message },

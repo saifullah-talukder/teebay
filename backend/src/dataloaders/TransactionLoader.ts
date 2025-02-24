@@ -12,17 +12,23 @@ export class TransactionLoader extends Loader {
 
   loadTransactionsByProduct = new DataLoader(async (productIds: readonly string[]) => {
     const transactions = await this.transactionRepository.findTransactionsByProduct(productIds as string[])
-    return productIds.map(id => transactions.filter(transaction => transaction.productId === id))
+    return productIds.map(id =>
+      transactions.filter((transaction: (typeof transactions)[0]) => transaction.productId === id)
+    )
   })
 
   loadTransactionsBySeller = new DataLoader(async (sellerIds: readonly string[]) => {
     const transactions = await this.transactionRepository.findTransactionsBySeller(sellerIds as string[])
-    return sellerIds.map(id => transactions.filter(transaction => transaction.sellerId === id))
+    return sellerIds.map(id =>
+      transactions.filter((transaction: (typeof transactions)[0]) => transaction.sellerId === id)
+    )
   })
 
   loadTransactionsByBuyer = new DataLoader(async (buyerIds: readonly string[]) => {
     const transactions = await this.transactionRepository.findTransactionsByBuyer(buyerIds as string[])
-    return buyerIds.map(id => transactions.filter(transaction => transaction.buyerId === id))
+    return buyerIds.map(id =>
+      transactions.filter((transaction: (typeof transactions)[0]) => transaction.buyerId === id)
+    )
   })
 
   register() {

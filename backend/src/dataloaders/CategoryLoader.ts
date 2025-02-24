@@ -14,7 +14,9 @@ export class CategoryLoader extends Loader {
     const productCategories = await this.categoryRepository.findCategoriesByProducts(productIds as string[])
 
     return productIds.map(productId =>
-      productCategories.filter(category => category.products.some(product => product.id === productId))
+      productCategories.filter((category: (typeof productCategories)[0]) =>
+        category.products.some((product: (typeof category.products)[0]) => product.id === productId)
+      )
     )
   })
 
