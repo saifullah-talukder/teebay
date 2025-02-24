@@ -16,7 +16,7 @@ export class TransactionTypeResolver extends Resolver {
   }
 
   async seller(parent: { sellerId: string }, _: any, context: Context) {
-    return await context.loaders.userLoader.loadUsersByEmail.load(parent.sellerId)
+    return await context.loaders.userLoader.loadUsersById.load(parent.sellerId)
   }
 
   register() {

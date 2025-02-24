@@ -24,10 +24,8 @@ const DeleteProductDialog: React.FC<DeleteProductDialogProps> = props => {
 
   const handleDelete = async () => {
     try {
-      await deleteProduct({
-        variables: { id: props.product.id },
-      })
-
+      await deleteProduct({ variables: { id: props.product.id } })
+      props.setIsOpen(false)
       toast.success(`Product deleted successfully`)
     } catch (error) {
       console.error(`Product deletion failed. ${(error as Error).message}`)

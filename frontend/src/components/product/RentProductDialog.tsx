@@ -7,7 +7,6 @@ import { dateSchema } from '../../utils/Validation'
 
 type RentProductDialogDialogProps = Pick<PopupDialogProps, 'isOpen' | 'setIsOpen'> & {
   product: Product
-  handleRent: () => void
 }
 
 const RentProductDialog: React.FC<RentProductDialogDialogProps> = props => {

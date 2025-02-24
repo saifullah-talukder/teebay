@@ -28,26 +28,13 @@ const ProductDetails: React.FC = () => {
 
   const { product } = data
 
-  const handleBuy = () => {}
-  const handleRent = () => {}
-
   return (
     <>
       {isBuyDialogOpen && (
-        <BuyProductDialog
-          isOpen={isBuyDialogOpen}
-          setIsOpen={setIsBuyDialogOpen}
-          product={product}
-          handleBuy={handleBuy}
-        />
+        <BuyProductDialog isOpen={isBuyDialogOpen} setIsOpen={setIsBuyDialogOpen} product={product} />
       )}
       {isRentDialogOpen && (
-        <RentProductDialog
-          isOpen={isRentDialogOpen}
-          setIsOpen={setIsRentDialogOpen}
-          product={product}
-          handleRent={handleRent}
-        />
+        <RentProductDialog isOpen={isRentDialogOpen} setIsOpen={setIsRentDialogOpen} product={product} />
       )}
       <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-col gap-y-2 max-w-[520px] mt-4">
