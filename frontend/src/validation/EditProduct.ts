@@ -7,7 +7,7 @@ export const editProductSchema = z.object({
   price: z.coerce.number(),
   rentPrice: z.coerce.number().nullable(),
   isRentable: z.boolean(),
-  categories: z.array(z.string().nonempty()),
+  categories: z.array(z.string().nonempty()).nonempty(),
 })
 
 export type EditProductPayload = z.infer<typeof editProductSchema>

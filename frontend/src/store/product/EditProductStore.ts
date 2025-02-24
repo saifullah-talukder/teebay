@@ -1,14 +1,34 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { EditProductPayload, editProductSchema } from '../../validation/EditProduct'
+import { editProductSchema } from '../../validation/EditProduct'
+
+type EditProductState = {
+  id: string
+  title: string
+  categories: string[]
+  description: string
+  price: number | null
+  rentPrice: number | null
+  isRentable: boolean
+}
 
 type EditProductStore = {
-  state: EditProductPayload
+  state: EditProductState
   isValidated: boolean
   errorMessage: string | null
-  setAllState: (state: EditProductPayload) => void
-  setEditProductState: <T extends keyof EditProductPayload>(key: T, value: EditProductPayload[T]) => void
+  setAllState: (state: EditProductState) => void
+  setEditProductState: <T extends keyof EditProductState>(key: T, value: EditProductState[T]) => void
   reset: () => void
+}
+
+const initialState: EditProductState = {
+  id: '',
+  title: '',
+  categories: [],
+  description: '',
+  price: 0,
+  rentPrice: 0,
+  isRentable: true,
 }
 
 export const useEditProductStore = create<EditProductStore>()(
@@ -59,6 +79,10 @@ export const useEditProductStore = create<EditProductStore>()(
           }
 
           return newStore
+        }),
+      reset: () =>
+        set(() => {
+          return { state: initialState }
         }),
     }),
     { name: 'edit-product-store' }

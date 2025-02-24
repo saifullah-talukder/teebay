@@ -1,16 +1,25 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { CreateProductPayload, createProductSchema } from '../../validation/CreateProduct'
+import { createProductSchema } from '../../validation/CreateProduct'
+
+type CreateProductState = {
+  title: string
+  categories: string[]
+  description: string
+  price: number | null
+  rentPrice: number | null
+  isRentable: boolean
+}
 
 type CreateProductStore = {
-  state: CreateProductPayload
+  state: CreateProductState
   isValidated: boolean
   errorMessage: string | null
-  setCreateProductState: <T extends keyof CreateProductPayload>(key: T, value: CreateProductPayload[T]) => void
+  setCreateProductState: <T extends keyof CreateProductState>(key: T, value: CreateProductState[T]) => void
   reset: () => void
 }
 
-const initialState: CreateProductPayload = {
+const initialState: CreateProductState = {
   title: '',
   categories: [],
   description: '',
