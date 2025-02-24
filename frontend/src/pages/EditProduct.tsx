@@ -16,7 +16,7 @@ import { CategoriesData, ProductData, ProductVars } from '../types/graphql'
 
 const EditProduct: React.FC = () => {
   const navigate = useNavigate()
-  const { state, setAllState, isValidated, errorMessage, setEditProductState } = useEditProductStore()
+  const { state, setAllState, isValidated, errorMessage, setEditProductState, reset } = useEditProductStore()
   const { id: productId } = useParams()
   const {
     loading: productLoading,
@@ -64,6 +64,7 @@ const EditProduct: React.FC = () => {
     try {
       await updateProduct({ variables: state })
       toast.success('Product update successful')
+      reset()
       navigate('/product/my')
     } catch (error) {
       console.error(`Product update failed. ${(error as Error).message}`)

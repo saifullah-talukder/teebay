@@ -17,7 +17,7 @@ type ProductCreationStep = 'title' | 'categories' | 'description' | 'price' | 's
 
 const CreateProduct: React.FC = () => {
   const [currenstStep, setCurrentStep] = useState<ProductCreationStep>('title')
-  const { state, isValidated, errorMessage, setCreateProductState } = useCreateProductStore()
+  const { state, isValidated, errorMessage, setCreateProductState, reset } = useCreateProductStore()
   const { error: categoriesFetchError, data: categoriesData } = useQuery<CategoriesData>(GET_CATEGORIES)
   const [createProduct, { loading, error }] = useMutation(CREATE_PRODUCT, {
     refetchQueries: ['GetProducts', 'GetMyProducts'],
@@ -46,6 +46,7 @@ const CreateProduct: React.FC = () => {
     try {
       await createProduct({ variables: state })
       toast.success('Product creation successful')
+      reset()
       navigate('/product/my')
     } catch (error) {
       console.error(`Product creation failed. ${(error as Error).message}`)

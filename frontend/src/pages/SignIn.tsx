@@ -13,7 +13,7 @@ import { useSignInStore } from '../store/auth/SignInStore'
 import { User } from '../types/graphql'
 
 const SignIn: React.FC = () => {
-  const { state, isValidated, errorMessage, setSignInState } = useSignInStore()
+  const { state, isValidated, errorMessage, setSignInState, reset } = useSignInStore()
   const [signin, { loading, error }] = useMutation(SIGN_IN)
   const navigate = useNavigate()
 
@@ -24,9 +24,7 @@ const SignIn: React.FC = () => {
     }
 
     try {
-      const response = await signin({
-        variables: state,
-      })
+      const response = await signin({ variables: state })
 
       const userData = response.data.signin.user as User
       updateAuthToken(response.data.signin.token)
@@ -43,6 +41,7 @@ const SignIn: React.FC = () => {
       })
 
       toast.success(`Welcome, ${userData.firstName} ${userData.lastName}`)
+      reset()
       navigate('/product/all')
     } catch (error) {
       console.error(`Sign in failed. ${(error as Error).message}`)

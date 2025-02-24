@@ -15,7 +15,7 @@ import { phoneSchema } from '../utils/Validation'
 import { User } from '../types/graphql'
 
 const SignUp: React.FC = () => {
-  const { state, isValidated, errorMessage, setSignUpState } = useSignUpStore()
+  const { state, isValidated, errorMessage, setSignUpState, reset } = useSignUpStore()
   const [signup, { loading, error }] = useMutation(SIGN_UP)
   const navigate = useNavigate()
 
@@ -44,6 +44,7 @@ const SignUp: React.FC = () => {
       })
 
       toast.success('Sign up successful')
+      reset()
       navigate('/signin')
     } catch (error) {
       console.error(`Sign up failed. ${(error as Error).message}`)
