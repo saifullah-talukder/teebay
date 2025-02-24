@@ -16,17 +16,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isUserOwner, classNa
   const navigate = useNavigate()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  const handleDelete = () => {}
-
   return (
     <>
       {isDeleteDialogOpen && (
-        <DeleteProductDialog
-          isOpen={isDeleteDialogOpen}
-          setIsOpen={setIsDeleteDialogOpen}
-          product={product}
-          handleDelete={handleDelete}
-        />
+        <DeleteProductDialog isOpen={isDeleteDialogOpen} setIsOpen={setIsDeleteDialogOpen} product={product} />
       )}
       <div
         className={twMerge(

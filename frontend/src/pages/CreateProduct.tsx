@@ -46,7 +46,7 @@ const CreateProduct: React.FC = () => {
     try {
       await createProduct({ variables: state })
       toast.success('Product creation successful')
-      navigate('/product/all')
+      navigate('/product/my')
     } catch (error) {
       console.error(`Product creation failed. ${(error as Error).message}`)
     }

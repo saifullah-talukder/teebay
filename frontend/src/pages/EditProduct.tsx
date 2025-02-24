@@ -1,18 +1,74 @@
-import React from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import React, { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
 import MultiSelectInputField from '../components/form/MultiSelectInputField'
 import TextArea from '../components/form/TextArea'
 import TextInputField from '../components/form/TextInputfield'
-import { useEditProductStore } from '../store/product/EditProductStore'
-import { mockData } from '../utils/data'
+import Loading from '../components/shared/Loading'
+import LoadingError from '../components/shared/LoadingError'
 import PrimaryActionButton from '../components/shared/PrimaryActionButton'
+import { GET_CATEGORIES } from '../graphql/Category'
+import { GET_PRODUCT, UPDATE_PRODUCT } from '../graphql/Product'
+import { useEditProductStore } from '../store/product/EditProductStore'
+import { CategoriesData, ProductData, ProductVars } from '../types/graphql'
 
 const EditProduct: React.FC = () => {
-  const { state, setAllState, setEditProductState } = useEditProductStore()
+  const navigate = useNavigate()
+  const { state, setAllState, isValidated, errorMessage, setEditProductState } = useEditProductStore()
+  const { id: productId } = useParams()
+  const {
+    loading: productLoading,
+    error: productFetchError,
+    data: productData,
+  } = useQuery<ProductData, ProductVars>(GET_PRODUCT, {
+    variables: { id: productId as string },
+  })
+  const { error: categoriesFetchError, data: categoriesData } = useQuery<CategoriesData>(GET_CATEGORIES)
+  const [updateProduct, { loading, error }] = useMutation(UPDATE_PRODUCT, {
+    refetchQueries: ['GetProducts', 'GetMyProducts'],
+    awaitRefetchQueries: true,
+  })
 
-  const { categories } = mockData
+  useEffect(() => {
+    if (productData?.product) {
+      setAllState({ ...productData.product, categories: productData.product.categories.map(category => category.name) })
+    }
+  }, [productData, setAllState])
 
-  const handleSubmit = () => {}
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message)
+    }
+  }, [error])
+
+  if (productLoading || state === null) {
+    return <Loading />
+  } else if (productFetchError) {
+    return <LoadingError errorMessage="Error fetching product" />
+  } else if (!productData?.product) {
+    return <LoadingError errorMessage="Product not found" />
+  } else if (categoriesFetchError || !categoriesData) {
+    return <LoadingError errorMessage="Error fetching categories" />
+  }
+
+  const { categories } = categoriesData
+
+  const handleSubmit = async () => {
+    if (!isValidated) {
+      toast.error(`Error trying to create product. ${errorMessage}`)
+      return
+    }
+
+    try {
+      await updateProduct({ variables: state })
+      toast.success('Product update successful')
+      navigate('/product/my')
+    } catch (error) {
+      console.error(`Product update failed. ${(error as Error).message}`)
+    }
+  }
 
   return (
     <div className="w-full flex justify-center">
@@ -23,6 +79,7 @@ const EditProduct: React.FC = () => {
           label="Title"
           placeholder="Enter product title"
           onTextChange={text => setEditProductState('title', text)}
+          value={state.title}
         />
         <MultiSelectInputField
           className="w-full"
@@ -39,13 +96,18 @@ const EditProduct: React.FC = () => {
           }
           isClearable={true}
         />
-        <TextArea label="Description" onTextChange={() => {}} />
+        <TextArea
+          label="Description"
+          value={state.description}
+          onTextChange={text => setEditProductState('description', text)}
+        />
         <TextInputField
           className="w-full"
           label="Price"
           placeholder="Enter price"
           validationSchema={z.coerce.number()}
           onTextChange={text => setEditProductState('price', Number(text))}
+          value={String(state.price)}
         />
         <TextInputField
           className="w-full"
@@ -53,9 +115,10 @@ const EditProduct: React.FC = () => {
           placeholder="Enter rent price"
           validationSchema={z.coerce.number()}
           onTextChange={text => setEditProductState('rentPrice', Number(text))}
+          value={String(state.rentPrice)}
         />
         <div className="w-full flex flex-row-reverse justify-between">
-          <PrimaryActionButton label="Submit" onClick={handleSubmit} />
+          <PrimaryActionButton label="Submit" onClick={handleSubmit} isLoading={loading} />
         </div>
       </div>
     </div>

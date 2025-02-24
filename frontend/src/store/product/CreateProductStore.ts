@@ -23,6 +23,8 @@ export const useCreateProductStore = create<CreateProductStore>()(
   devtools(
     set => ({
       state: initialState,
+      isValidated: false,
+      errorMessage: null,
 
       setCreateProductState: (key, value) =>
         set(store => {

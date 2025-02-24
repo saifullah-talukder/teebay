@@ -14,7 +14,7 @@ export type Product = {
   title: string
   description: string
   price: number
-  rentPrice?: number | null
+  rentPrice: number | null
   categories: Category[]
   owner: EmbeddedUser
   isAvailable: boolean
