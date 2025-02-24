@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -p ./",
     "dev": "ts-node-dev --respawn -- src/app.ts",
-    "start": "pm2-runtime start ecosystem.config.js",
+    "start": "npx prisma migrate deploy && npx prisma generate && pm2-runtime start ecosystem.config.js",
     "test": "jest --coverage"
   },
   "keywords": [],

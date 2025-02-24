@@ -1,0 +1,28 @@
+version: '3'
+services:
+  teebay-postgres:
+    image: postgres:latest
+    container_name: teebay-postgres
+    environment:
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: teebay
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  teebay-backend:
+    build: .
+    container_name: teebay-backend
+    ports:
+      - '4000:4000'
+    depends_on:
+      - teebay-postgres
+    environment:
+      - HTTP_PORT=4000
+      - JWT_SECRET=3cc3e7647e96614c28b4744f76bcfcac6f515b1645e001c7e60e59cffb64d3d0
+      - DATABASE_URL=postgresql://postgres:yourpassword@teebay-postgres:5432/teebay
+
+volumes:
+  postgres_data:
