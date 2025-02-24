@@ -12,3 +12,8 @@ export function calculateDaysBetween(startDate: DateInput, endDate: DateInput): 
 
   return differenceInDays(addDays(end, 1), start)
 }
+
+export function getDateFromSlashSeparatedString(dateStr: string) {
+  const [day, month, year] = dateStr.split('/').map(Number)
+  return new Date(year, month - 1, day)
+}

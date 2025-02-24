@@ -1,8 +1,10 @@
 import { getUserId } from '../middleware/Auth'
 import { FindRentalsByOwnerService } from '../services/rental/FindRentalsByOwnerService'
+import { FindRentalsByProductService } from '../services/rental/FindRentalsByProductService'
 import { FindRentalsByRenterService } from '../services/rental/FindRentalsByRenterService'
 import { RentProductService } from '../services/rental/RentProductService'
 import { Context } from '../types/Apollo'
+import { RentalsByProductPayload, validateRentalsByProductPayload } from '../validation/rental/RentalsByProductQuery'
 import { RentProductPayload, validateRentProductPayload } from '../validation/rental/RentProductMutation'
 import Resolver from './Resolver'
 
@@ -39,18 +41,25 @@ export class RentalQueryResolver extends Resolver {
     return await new FindRentalsByRenterService(userId, context.loaders).execute()
   }
 
+  async rentalsByProduct(_: any, payload: RentalsByProductPayload, context: Context) {
+    const userId = getUserId(context)
+    const { productId } = validateRentalsByProductPayload(payload)
+    return await new FindRentalsByProductService(productId, userId, context.loaders).execute()
+  }
+
   register() {
     return {
       rentalsByOwner: this.rentalsByOwner.bind(this),
       rentalsByRenter: this.rentalsByRenter.bind(this),
+      rentalsByProduct: this.rentalsByProduct.bind(this),
     }
   }
 }
 
 export class RentalMutationResolver extends Resolver {
-  async rentProduct(_: any, paylod: RentProductPayload, context: Context) {
+  async rentProduct(_: any, payload: RentProductPayload, context: Context) {
     const renterId = getUserId(context)
-    const rentProductPayload = validateRentProductPayload(paylod)
+    const rentProductPayload = validateRentProductPayload(payload)
     return await new RentProductService(renterId, rentProductPayload, context.loaders).execute()
   }
 

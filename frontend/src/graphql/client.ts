@@ -33,7 +33,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
       if (
         message.toLowerCase().includes('not authenticated') ||
-        message.toLowerCase().includes('unauthorized') ||
         message.toLowerCase().includes('unauthenticated') ||
         message.toLowerCase().includes('invalid token')
       ) {

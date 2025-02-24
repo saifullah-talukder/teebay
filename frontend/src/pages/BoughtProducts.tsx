@@ -3,7 +3,7 @@ import React from 'react'
 import ProductCard from '../components/product/ProductCard'
 import Loading from '../components/shared/Loading'
 import LoadingError from '../components/shared/LoadingError'
-import { GET_BOUGHT_PRODUCTS } from '../graphql/Product'
+import { GET_BOUGHT_PRODUCTS } from '../graphql/Transaction'
 import { MyBoughtProductsData } from '../types/graphql'
 
 const BoughtProducts: React.FC = () => {

@@ -64,8 +64,8 @@ model Rental {
   renterId  String
   owner     User     @relation("Owner", fields: [ownerId], references: [id])
   ownerId   String
-  startDate DateTime
-  endDate   DateTime
+  startDate String
+  endDate   String
   price     Float // Total price
   createdAt DateTime @default(now())
 }

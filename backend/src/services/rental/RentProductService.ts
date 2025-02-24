@@ -1,9 +1,9 @@
 import { GraphQLError } from 'graphql'
+import { RentalRepository } from '../../database/RentalRepository'
 import { DataLoaders } from '../../providers/DataLoaders'
+import { calculateDaysBetween, getDateFromSlashSeparatedString } from '../../utils/DateTime'
 import { RentProductPayload } from '../../validation/rental/RentProductMutation'
 import { Service } from '../Service'
-import { calculateDaysBetween } from '../../utils/DateTime'
-import { RentalRepository } from '../../database/RentalRepository'
 
 export class RentProductService extends Service {
   rentalRepository: RentalRepository
@@ -16,8 +16,8 @@ export class RentProductService extends Service {
   async execute() {
     const { productId, startDate, endDate } = this.rentProductPayload
 
-    const start = new Date(startDate)
-    const end = new Date(endDate)
+    const start = getDateFromSlashSeparatedString(startDate)
+    const end = getDateFromSlashSeparatedString(endDate)
     const today = new Date()
 
     today.setHours(0, 0, 0, 0)
@@ -64,7 +64,7 @@ export class RentProductService extends Service {
       })
     }
 
-    const durationInDays = calculateDaysBetween(startDate, endDate)
+    const durationInDays = calculateDaysBetween(start, end)
     const totalPrice = (product.rentPrice ?? 0) * durationInDays
 
     return await this.rentalRepository.createRental({

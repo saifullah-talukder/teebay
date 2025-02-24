@@ -1,10 +1,10 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { RENT_PRODUCT } from '../../graphql/Rental'
+import { GET_RENTALS_BY_PRODUCT, RENT_PRODUCT } from '../../graphql/Rental'
 import { useRentProductStore } from '../../store/rental/RentProductStore'
-import { Product } from '../../types/graphql'
+import { Product, RentalsByProductData, RentalsByProductVars } from '../../types/graphql'
 import { getDateFromSlashSeparatedString } from '../../utils/DateTime'
 import { dateSchema } from '../../utils/Validation'
 import TextInputField from '../form/TextInputfield'
@@ -18,6 +18,9 @@ type RentProductDialogDialogProps = Pick<PopupDialogProps, 'isOpen' | 'setIsOpen
 const RentProductDialog: React.FC<RentProductDialogDialogProps> = props => {
   const navigate = useNavigate()
   const { state, isValidated, errorMessage, setRentProductState } = useRentProductStore()
+  const { data: existingRentals } = useQuery<RentalsByProductData, RentalsByProductVars>(GET_RENTALS_BY_PRODUCT, {
+    variables: { productId: props.product.id },
+  })
   const [rentProduct, { loading, error }] = useMutation(RENT_PRODUCT, {
     refetchQueries: ['GetBorrowedProducts'],
     awaitRefetchQueries: true,
@@ -36,13 +39,7 @@ const RentProductDialog: React.FC<RentProductDialogDialogProps> = props => {
         return
       }
 
-      await rentProduct({
-        variables: {
-          productId: props.product.id,
-          startDate: getDateFromSlashSeparatedString(state.startDate).toISOString(),
-          endDate: getDateFromSlashSeparatedString(state.endDate).toISOString(),
-        },
-      })
+      await rentProduct({ variables: { productId: props.product.id, ...state } })
       props.setIsOpen(false)
       toast.success(`Product borrowed successfully`)
       navigate('/product/borrowed')
@@ -55,7 +52,15 @@ const RentProductDialog: React.FC<RentProductDialogDialogProps> = props => {
     <PopupDialog isOpen={props.isOpen} setIsOpen={props.setIsOpen} title="Rent Product" className="max-w-[420px]">
       <div className="flex h-auto w-full flex-col gap-y-4 pt-4">
         <p className="text-slate-800">Rented Days</p>
-        <div></div>
+        <div className="flex flex-col gap-y-2 -mt-2">
+          {existingRentals?.rentalsByProduct.map(rental => (
+            <div className="flex gap-x-2 text-xs text-slate-800">
+              <span>{rental.startDate}</span>
+              <span>{` - `}</span>
+              <span>{rental.endDate}</span>
+            </div>
+          ))}
+        </div>
         <p className="text-slate-800">Rental Period</p>
 
         <div className="flex flex-col gap-y-4">

@@ -83,6 +83,14 @@ export type MyLentProductsData = {
   me: { lentProducts: Rental[] }
 }
 
+export type RentalsByProductVars = {
+  productId: string
+}
+
+export type RentalsByProductData = {
+  rentalsByProduct: Rental[]
+}
+
 export type AuthPayload = {
   token: string
   user: User

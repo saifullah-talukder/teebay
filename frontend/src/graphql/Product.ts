@@ -48,6 +48,32 @@ export const GET_PRODUCT = gql`
   }
 `
 
+export const GET_MY_PRODUCTS = gql`
+  query GetMyProducts {
+    me {
+      products {
+        id
+        title
+        description
+        price
+        rentPrice
+        isAvailable
+        isRentable
+        categories {
+          name
+        }
+        createdAt
+        updatedAt
+        owner {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
+
 export const CREATE_PRODUCT = gql`
   mutation CreateProduct(
     $title: String!
@@ -121,200 +147,6 @@ export const UPDATE_PRODUCT = gql`
         id
         firstName
         lastName
-      }
-    }
-  }
-`
-
-export const GET_MY_PRODUCTS = gql`
-  query GetMyProducts {
-    me {
-      products {
-        id
-        title
-        description
-        price
-        rentPrice
-        isAvailable
-        isRentable
-        categories {
-          name
-        }
-        createdAt
-        updatedAt
-        owner {
-          id
-          firstName
-          lastName
-        }
-      }
-    }
-  }
-`
-
-export const GET_BOUGHT_PRODUCTS = gql`
-  query GetBoughtProducts {
-    me {
-      boughtProducts {
-        id
-        buyer {
-          id
-          firstName
-          lastName
-        }
-        seller {
-          id
-          firstName
-          lastName
-        }
-        price
-        createdAt
-        product {
-          id
-          title
-          description
-          price
-          rentPrice
-          isAvailable
-          isRentable
-          categories {
-            name
-          }
-          createdAt
-          updatedAt
-          owner {
-            id
-            firstName
-            lastName
-          }
-        }
-      }
-    }
-  }
-`
-
-export const GET_SOLD_PRODUCTS = gql`
-  query GetSoldProducts {
-    me {
-      soldProducts {
-        id
-        buyer {
-          id
-          firstName
-          lastName
-        }
-        seller {
-          id
-          firstName
-          lastName
-        }
-        price
-        createdAt
-        product {
-          id
-          title
-          description
-          price
-          rentPrice
-          isAvailable
-          isRentable
-          categories {
-            name
-          }
-          createdAt
-          updatedAt
-          owner {
-            id
-            firstName
-            lastName
-          }
-        }
-      }
-    }
-  }
-`
-
-export const GET_BORROWED_PRODUCTS = gql`
-  query GetBorrowedProducts {
-    me {
-      rentedProducts {
-        id
-        renter {
-          id
-          firstName
-          lastName
-        }
-        owner {
-          id
-          firstName
-          lastName
-        }
-        price
-        startDate
-        endDate
-        createdAt
-        product {
-          id
-          title
-          description
-          price
-          rentPrice
-          isAvailable
-          isRentable
-          categories {
-            name
-          }
-          createdAt
-          updatedAt
-          owner {
-            id
-            firstName
-            lastName
-          }
-        }
-      }
-    }
-  }
-`
-
-export const GET_LENT_PRODUCTS = gql`
-  query GetLentProducts {
-    me {
-      lentProducts {
-        id
-        renter {
-          id
-          firstName
-          lastName
-        }
-        owner {
-          id
-          firstName
-          lastName
-        }
-        price
-        startDate
-        endDate
-        createdAt
-        product {
-          id
-          title
-          description
-          price
-          rentPrice
-          isAvailable
-          isRentable
-          categories {
-            name
-          }
-          createdAt
-          updatedAt
-          owner {
-            id
-            firstName
-            lastName
-          }
-        }
       }
     }
   }

@@ -61,6 +61,7 @@ type Query {
   productsByOwner: [Product!]!
   rentalsByOwner: [Rental!]!
   rentalsByRenter: [Rental!]!
+  rentalsByProduct(productId: ID!): [Rental!]!
   transactionsBySeller: [Transaction!]!
   transactionsByBuyer: [Transaction!]!
 }
